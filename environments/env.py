@@ -15,12 +15,18 @@ class EconomyEnv:
         self.build_payout_max = config['build_payout_max']
         self.build_payout_multiplier = config['build_payout_multiplier']
         self.risk_aversion = config['risk_aversion']
+        self.discount_factor = config['discount_factor']
 
         self.map = self.generate_map()
 
         self.n_agents = config['n_agents']
         self.mobile_agents = []
+        self.labour_disutilities = config['labour_disutilities']
         for i in range(self.n_agents):
+            if isinstance(self.labour_disutilities, list):
+                labour_disutility = self.labour_disutilities[i]
+            else:
+                labour_disutility = self.labour_disutilities
             self.mobile_agents.append(
                 MobileAgent(
                     "MobileAgent",
@@ -32,7 +38,9 @@ class EconomyEnv:
                             self.build_payout_max)
                     ),
                     self.risk_aversion,
-                    self
+                    self,
+                    labour_disutility,
+                    None # TODO: pass in an instance of the llm
                 )
             )
         

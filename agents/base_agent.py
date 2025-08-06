@@ -11,7 +11,7 @@ class BaseAgent:
         self.config = config
         self.env = env
 
-    def observe(self, env):
+    def observe(self):
         pass
 
     def step(self, action):

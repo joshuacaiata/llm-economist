@@ -91,13 +91,23 @@ class MobileAgent(BaseAgent):
         action = self.get_action(prompt)
         self.execute_action(action)
 
+    def execute_action(self, action):
+        action_type = action['action_type']
+        action_args = action['action_args']
 
+        if action_type == "Move":
+            direction = action_args.split(" ")[1]
+            if direction in ["Up", "Down", "Left", "Right"]:
+                self.move(direction)
+        elif action_type == "Trade":
+            action = action_args.split(" ")
+            if action[0] in ["Buy", "Sell"]:
+                pass # TODO: implement trade
+        elif action_type == "Build":
+            self.build()
+        else:
+            pass
 
-
-        # action is in the form of: {'action_type': 'move/trade/build', 'action_args': {}}
-        # if action is move, then args is {'direction': 'up/down/left/right'}
-        # if action is trade, then the args is {'action': 'buy/sell', 'item': 'wood/stone', 'amount': int}
-        # if action is build, args is empty
 
     def get_action(self, observation_prompt):
         prompt = f"""
@@ -137,8 +147,9 @@ class MobileAgent(BaseAgent):
         """
 
         prompt_to_llm = observation_prompt + "\n" + prompt
-        action = self.llm.generate_response(prompt_to_llm)
-        return action
+        result = self.llm.generate_response(prompt_to_llm)
+        action = result.split(",")
+        return {'action_type': action[0], 'action_args': action[1]}
 
     def reset(self):
         pass
@@ -149,3 +160,42 @@ class MobileAgent(BaseAgent):
         else:
             utility = (self.inventory["coins"] ** (1 - self.risk_aversion) - 1) / (1 - self.risk_aversion)
             self.utility.append(utility - self.labour)
+
+    def move(self, direction):
+        location = self.env.current_agent_positions[self.agent_id]
+        if direction == "Up":
+            new_location = (location[0] - 1, location[1])
+        elif direction == "Down":
+            new_location = (location[0] + 1, location[1])
+        elif direction == "Left":
+            new_location = (location[0], location[1] - 1)
+        elif direction == "Right":
+            new_location = (location[0], location[1] + 1)
+
+        # check if its valid. if so, update the env. if not, do nothing.
+        # its valid if the location is in the map, and is not water
+        if new_location[0] < 0 or new_location[0] >= self.env.map_size[0] or new_location[1] < 0 or new_location[1] >= self.env.map_size[1]:
+            return
+        if self.env.map["Water"][new_location[0], new_location[1]] == 1:
+            return
+
+        self.env.current_agent_positions[self.agent_id] = new_location
+
+        # if the location has a stone or wood, we collect it with probability 
+
+    def build(self):
+        # build if we have at least one wood and one stone
+        # and if the location is buildable
+
+        location = self.env.current_agent_positions[self.agent_id]
+        if self.env.map["Buildable"][location[0], location[1]] == 0:
+            return
+
+        if self.inventory["wood"] < 1 or self.inventory["stone"] < 1:
+            return
+
+        self.env.map["Houses"][location[0], location[1]] = 1
+        self.env.map["Buildable"][location[0], location[1]] = 0
+        self.inventory["wood"] -= 1
+        self.inventory["stone"] -= 1
+        self.inventory["coins"] += self.build_payout

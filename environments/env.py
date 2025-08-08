@@ -1,6 +1,7 @@
 import numpy as np
 import random
 from agents.mobile_agent import MobileAgent
+from services.plotting_service import PlottingService
 
 class EconomyEnv:
     def __init__(self, config: dict):
@@ -16,17 +17,19 @@ class EconomyEnv:
         self.build_payout_multiplier = config['build_payout_multiplier']
         self.risk_aversion = config['risk_aversion']
         self.discount_factor = config['discount_factor']
+        self.action_mechanism = config['action_mechanism']
+        self.gather_skill_range = config['gather_skill_range']
+
+        self.move_labour = config['move_labour']
+        self.build_labour = config['build_labour']
+        self.trade_labour = config['trade_labour']
+        self.gather_labour = config['gather_labour']
 
         self.map = self.generate_map()
 
         self.n_agents = config['n_agents']
         self.mobile_agents = []
-        self.labour_disutilities = config['labour_disutilities']
         for i in range(self.n_agents):
-            if isinstance(self.labour_disutilities, list):
-                labour_disutility = self.labour_disutilities[i]
-            else:
-                labour_disutility = self.labour_disutilities
             self.mobile_agents.append(
                 MobileAgent(
                     "MobileAgent",
@@ -39,13 +42,18 @@ class EconomyEnv:
                     ),
                     self.risk_aversion,
                     self,
-                    labour_disutility,
-                    None # TODO: pass in an instance of the llm
+                    None, # TODO: pass in an instance of the llm
+                    self.action_mechanism,
+                    random.uniform(self.gather_skill_range[0], self.gather_skill_range[1])
                 )
             )
         
         self.initial_agent_positions = self.initialize_agents()
         self.current_agent_positions = self.initial_agent_positions.copy()
+
+        self.episode_length = config['episode_length']
+        
+        self.plotting_service = PlottingService()
 
     def generate_map(self):
         map_dict = {
@@ -121,6 +129,11 @@ class EconomyEnv:
             if self.map["Stone"][row, col] == 0 and random.random() < self.stone_regen_prob:
                 self.map["Stone"][row, col] = 1
 
+    def step(self):
+        for agent in self.mobile_agents:
+            agent.step()
+        self.regenerate_tiles()
+
     def reset_year(self):
         # For each agent, call reset year
         shuffled_agents = random.sample(self.mobile_agents, len(self.mobile_agents))
@@ -147,3 +160,17 @@ class EconomyEnv:
 
         # clear all orders
         self.trading_system.reset_episode()
+
+    def run_economy(self):
+        for i in range(self.episode_length):
+            self.step()
+            
+        return self.mobile_agents
+
+    def plot_agent_metrics(self):
+        """Plot and save agent metrics over time using the plotting service."""
+        self.plotting_service.plot_agent_metrics(self.mobile_agents, self.config)
+    
+    def plot_specific_metric(self, metric, filename=None):
+        """Plot a specific metric using the plotting service."""
+        self.plotting_service.plot_specific_metric(self.mobile_agents, metric, self.config, filename)

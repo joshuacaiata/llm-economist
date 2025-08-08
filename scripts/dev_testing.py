@@ -13,11 +13,35 @@ config = {
     'build_payout_max': 20,
     'build_payout_multiplier': 1.5,
     'risk_aversion': 0.5,
-    'n_agents': 1,
+    'n_agents': 5,
     'discount_factor': 0.95,
-    'labour_disutilities': 0
+    'action_mechanism': "random",
+    'episode_length': 1000,
+    'plot_path': 'plots',
+    'gather_skill_range': (0.0, 1.0),
+    'move_labour': 0.21,
+    'build_labour': 2.1,
+    'trade_labour': 0.05,
+    'gather_labour': 0.21
 }
 
 env = EconomyEnv(config)
 
-print(env.current_agent_positions)
+print("Initial agent positions:", env.current_agent_positions)
+
+# Run the economy
+print(f"Running economy for {config['episode_length']} steps...")
+agents = env.run_economy()
+
+# Plot and save metrics
+print("Generating plots...")
+env.plot_agent_metrics()
+
+# Print final stats
+print("\nFinal agent stats:")
+for agent in agents:
+    print(f"Agent {agent.agent_id}:")
+    print(f"  Inventory: {agent.inventory}")
+    print(f"  Houses built: {agent.total_houses_built}")
+    print(f"  Final utility: {agent.utility[-1]:.2f}")
+    print()

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 
 class PlottingService:
@@ -14,15 +15,19 @@ class PlottingService:
         """
         self.plot_path = plot_path
         self.metrics_to_plot = ['coins', 'wood', 'stone', 'utility', 'houses_built']
+        self.env = None
     
-    def plot_agent_metrics(self, agents, config=None):
+    def plot_agent_metrics(self, agents, config=None, trading_system=None, env=None):
         """
         Plot and save agent metrics over time.
         
         Args:
             agents (list): List of agent objects with metrics_history
             config (dict, optional): Configuration dictionary containing plot_path
+            trading_system (TradingSystem, optional): Trading system instance for market metrics
+            env (EconomyEnv, optional): Environment instance for map visualization
         """
+        self.env = env  # Store environment reference for map plotting
         # Determine plot path
         plot_path = self._get_plot_path(config)
         if not plot_path:
@@ -36,7 +41,11 @@ class PlottingService:
         self._create_individual_plots(agents, plot_path)
         
         # Create summary dashboard
-        self._create_summary_plot(agents, plot_path)
+        self._create_summary_plot(agents, plot_path, trading_system)
+        
+        # Plot market metrics if trading system is provided
+        if trading_system:
+            self.plot_market_metrics(trading_system, config)
         
         print(f"All agent metrics plots saved successfully to {plot_path}!")
     
@@ -74,11 +83,14 @@ class PlottingService:
             
             print(f"Saved {filename}")
     
-    def _create_summary_plot(self, agents, plot_path):
-        """Create a summary plot with all metrics."""
-        fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+    def _create_summary_plot(self, agents, plot_path, trading_system=None):
+        """Create a summary plot with all metrics including market data if available."""
+        num_rows = 3
+        num_cols = 3
+        fig, axes = plt.subplots(num_rows, num_cols, figsize=(15, 15))
         axes = axes.flatten()
         
+        # Plot agent metrics
         for i, metric in enumerate(self.metrics_to_plot):
             ax = axes[i]
             
@@ -94,10 +106,55 @@ class PlottingService:
             ax.legend()
             ax.grid(True, alpha=0.3)
         
-        # Hide the last subplot if we have an odd number of metrics
-        if len(self.metrics_to_plot) < len(axes):
-            axes[-1].set_visible(False)
+        # Plot market metrics if trading system is provided
+        if trading_system:
+            # Plot wood orders
+            ax_wood = axes[5]
+            time_steps = range(len(trading_system.order_history["wood"]["buy"]))
+            buy_counts = trading_system.order_history["wood"]["buy"]
+            sell_counts = trading_system.order_history["wood"]["sell"]
             
+            ax_wood.plot(time_steps, buy_counts, label='Buy Orders', linewidth=2)
+            ax_wood.plot(time_steps, sell_counts, label='Sell Orders', linewidth=2)
+            ax_wood.set_xlabel('Time Step')
+            ax_wood.set_ylabel('Number of Orders')
+            ax_wood.set_title('Wood Market Orders')
+            ax_wood.legend(loc='upper left')
+            ax_wood.grid(True, alpha=0.3)
+            
+            # Plot stone orders
+            ax_stone = axes[6]
+            time_steps = range(len(trading_system.order_history["stone"]["buy"]))
+            buy_counts = trading_system.order_history["stone"]["buy"]
+            sell_counts = trading_system.order_history["stone"]["sell"]
+            
+            ax_stone.plot(time_steps, buy_counts, label='Buy Orders', linewidth=2)
+            ax_stone.plot(time_steps, sell_counts, label='Sell Orders', linewidth=2)
+            ax_stone.set_xlabel('Time Step')
+            ax_stone.set_ylabel('Number of Orders')
+            ax_stone.set_title('Stone Market Orders')
+            ax_stone.legend(loc='upper left')
+            ax_stone.grid(True, alpha=0.3)
+            
+            # Plot price history
+            ax_prices = axes[7]
+            for resource in ["wood", "stone"]:
+                times = [trade[0] for trade in trading_system.trades[resource]]
+                prices = [trade[1] for trade in trading_system.trades[resource]]
+                
+                if times and prices:  # Only plot if we have data
+                    ax_prices.plot(times, prices, label=f'{resource.title()} Price', linewidth=2)
+            
+            ax_prices.set_xlabel('Time Step')
+            ax_prices.set_ylabel('Price')
+            ax_prices.set_title('Resource Prices')
+            ax_prices.legend(loc='upper left')
+            ax_prices.grid(True, alpha=0.3)
+            
+            # Plot map state in the last subplot
+            ax_map = axes[8]
+            self._plot_map_state(self.env, agents, ax_map)
+        
         plt.tight_layout()
         summary_filepath = os.path.join(plot_path, 'agent_metrics_summary.png')
         plt.savefig(summary_filepath, dpi=300, bbox_inches='tight')
@@ -157,3 +214,137 @@ class PlottingService:
         """Add a custom metric to be plotted."""
         if metric_name not in self.metrics_to_plot:
             self.metrics_to_plot.append(metric_name)
+            
+    def plot_map_state(self, env, agents, config=None):
+        """Create a standalone map visualization."""
+        plot_path = self._get_plot_path(config)
+        if not plot_path:
+            print("Warning: No plot path specified, skipping plotting")
+            return
+            
+        os.makedirs(plot_path, exist_ok=True)
+        
+        # Create figure with enough space for legend
+        plt.figure(figsize=(12, 8))
+        ax = plt.gca()
+        self._plot_map_state(env, agents, ax)
+        
+        # Save the plot
+        filepath = os.path.join(plot_path, 'map_state.png')
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print("Saved map_state.png")
+        
+    def _plot_map_state(self, env, agents, ax):
+        """Plot the map state with agent positions and paths."""
+        # Create a colormap for the map
+        cmap = plt.cm.colors.ListedColormap(['white', 'blue'])  # white for normal, blue for water
+        
+        # Plot the base map (water)
+        ax.imshow(env.map["Water"], cmap=cmap)
+        
+        # Plot houses with X markers
+        house_positions = zip(*np.where(env.map["Houses"] == 1))
+        for pos in house_positions:
+            ax.plot(pos[1], pos[0], 'kX', markersize=10)  # Black X for houses
+        
+        # Plot agent paths with different colors
+        colors = plt.cm.rainbow(np.linspace(0, 1, len(agents)))
+        for agent, color in zip(agents, colors):
+            # Plot starting position (triangle)
+            start_pos = env.initial_agent_positions[agent.agent_id]
+            ax.plot(start_pos[1], start_pos[0], marker='^', color=color, markersize=10, 
+                   label=f'Agent {agent.agent_id} Start')
+            
+            # Plot movement path
+            if hasattr(agent, 'movement_history') and agent.movement_history:
+                path = np.array(agent.movement_history)
+                ax.plot(path[:, 1], path[:, 0], '-', color=color, alpha=0.5, linewidth=2)
+            
+            # Plot current position (circle)
+            end_pos = env.current_agent_positions[agent.agent_id]
+            ax.plot(end_pos[1], end_pos[0], marker='o', color=color, markersize=10,
+                   label=f'Agent {agent.agent_id} End')
+        
+        # Customize the plot
+        ax.grid(True, which='both', color='gray', linewidth=0.5)
+        ax.set_xticks(np.arange(-0.5, env.map_size[1], 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, env.map_size[0], 1), minor=True)
+        ax.set_xticks(np.arange(0, env.map_size[1], 1))
+        ax.set_yticks(np.arange(0, env.map_size[0], 1))
+        
+        ax.set_title('Map State')
+        ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+            
+    def plot_market_metrics(self, trading_system, config=None):
+        """
+        Plot market metrics including number of buy/sell orders and last prices.
+        
+        Args:
+            trading_system: The trading system instance containing market data
+            config (dict, optional): Configuration dictionary containing plot_path
+        """
+        plot_path = self._get_plot_path(config)
+        if not plot_path:
+            print("Warning: No plot path specified, skipping plotting")
+            return
+            
+        os.makedirs(plot_path, exist_ok=True)
+        
+        # Plot number of orders
+        self._plot_order_counts(trading_system, plot_path)
+        
+        # Plot last prices
+        self._plot_price_history(trading_system, plot_path)
+        
+    def _plot_order_counts(self, trading_system, plot_path):
+        """Plot the number of buy and sell orders for each resource."""
+        plt.figure(figsize=(10, 6))
+        
+        resources = ["wood", "stone"]
+        for resource in resources:
+            time_steps = range(len(trading_system.order_history[resource]["buy"]))
+            buy_counts = trading_system.order_history[resource]["buy"]
+            sell_counts = trading_system.order_history[resource]["sell"]
+            
+            plt.plot(time_steps, buy_counts, label=f'{resource.title()} Buy Orders', linewidth=2)
+            plt.plot(time_steps, sell_counts, label=f'{resource.title()} Sell Orders', linewidth=2)
+        
+        plt.xlabel('Time Step')
+        plt.ylabel('Number of Orders')
+        plt.title('Market Order Counts Over Time')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        filepath = os.path.join(plot_path, 'market_orders.png')
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print("Saved market_orders.png")
+        
+    def _plot_price_history(self, trading_system, plot_path):
+        """Plot the last trade price for each resource over time."""
+        plt.figure(figsize=(10, 6))
+        
+        resources = ["wood", "stone"]
+        
+        for resource in resources:
+            # Extract time steps and prices from trades
+            times = [trade[0] for trade in trading_system.trades[resource]]
+            prices = [trade[1] for trade in trading_system.trades[resource]]
+            
+            if times and prices:  # Only plot if we have data
+                plt.plot(times, prices, label=f'{resource.title()} Price', linewidth=2)
+        
+        plt.xlabel('Time Step')
+        plt.ylabel('Price')
+        plt.title('Resource Prices Over Time')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        filepath = os.path.join(plot_path, 'market_prices.png')
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print("Saved market_prices.png")

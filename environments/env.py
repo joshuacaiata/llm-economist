@@ -2,6 +2,7 @@ import numpy as np
 import random
 from agents.mobile_agent import MobileAgent
 from services.plotting_service import PlottingService
+from services.trading_system import TradingSystem
 
 class EconomyEnv:
     def __init__(self, config: dict):
@@ -24,6 +25,7 @@ class EconomyEnv:
         self.build_labour = config['build_labour']
         self.trade_labour = config['trade_labour']
         self.gather_labour = config['gather_labour']
+        self.max_order_price = config['max_order_price']
 
         self.map = self.generate_map()
 
@@ -52,8 +54,12 @@ class EconomyEnv:
         self.current_agent_positions = self.initial_agent_positions.copy()
 
         self.episode_length = config['episode_length']
+
+        self.trading_system = TradingSystem(config, self)
         
         self.plotting_service = PlottingService()
+
+        self.time = 0
 
     def generate_map(self):
         map_dict = {
@@ -132,7 +138,9 @@ class EconomyEnv:
     def step(self):
         for agent in self.mobile_agents:
             agent.step()
+        self.trading_system.step()
         self.regenerate_tiles()
+        self.time += 1
 
     def reset_year(self):
         # For each agent, call reset year
@@ -160,6 +168,7 @@ class EconomyEnv:
 
         # clear all orders
         self.trading_system.reset_episode()
+        self.time = 0
 
     def run_economy(self):
         for i in range(self.episode_length):
@@ -169,7 +178,8 @@ class EconomyEnv:
 
     def plot_agent_metrics(self):
         """Plot and save agent metrics over time using the plotting service."""
-        self.plotting_service.plot_agent_metrics(self.mobile_agents, self.config)
+        self.plotting_service.plot_agent_metrics(self.mobile_agents, self.config, self.trading_system, self)
+        self.plotting_service.plot_map_state(self, self.mobile_agents, self.config)
     
     def plot_specific_metric(self, metric, filename=None):
         """Plot a specific metric using the plotting service."""

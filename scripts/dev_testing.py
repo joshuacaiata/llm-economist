@@ -13,7 +13,7 @@ config = {
     'build_payout_max': 20,
     'build_payout_multiplier': 1.5,
     'risk_aversion': 0.5,
-    'n_agents': 5,
+    'n_agents': 1,
     'discount_factor': 0.95,
     'action_mechanism': "random",
     'episode_length': 1000,
@@ -22,7 +22,9 @@ config = {
     'move_labour': 0.21,
     'build_labour': 2.1,
     'trade_labour': 0.05,
-    'gather_labour': 0.21
+    'gather_labour': 0.21,
+    'max_order_lifetime': 50,
+    'max_order_price': 1000
 }
 
 env = EconomyEnv(config)

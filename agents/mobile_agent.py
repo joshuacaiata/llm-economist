@@ -28,15 +28,21 @@ class MobileAgent(BaseAgent):
         self.llm = llm
         self.action_mechanism = action_mechanism
         self.gather_skill = gather_skill
+        self.active_orders = 0
 
         self.metrics_history = {
             'coins': [0],
             'wood': [0], 
             'stone': [0],
             'utility': [0],
-            'houses_built': [0]
+            'houses_built': [0],
+            'active_orders': [0],
+            'escrow_coins': [0],
+            'escrow_wood': [0],
+            'escrow_stone': [0]
         }
         self.total_houses_built = 0
+        self.movement_history = []
 
     def observe(self):
         """
@@ -125,7 +131,9 @@ class MobileAgent(BaseAgent):
         elif action_type == "Trade":
             action_parts = action_args.split(" ")
             if action_parts[0] in ["Buy", "Sell"]:
-                pass # TODO: implement trade
+                # Convert Buy/Sell to buy/sell for trading system
+                transaction_type = action_parts[0].lower()
+                self.env.trading_system.make_order(self.agent_id, action_parts[1].lower(), int(action_parts[2]), transaction_type)
         elif action_type == "Build":
             self.build()
         elif action_type == "Nothing":
@@ -261,7 +269,7 @@ class MobileAgent(BaseAgent):
             item_key = item.lower()
             if self.inventory[item_key] > 0:
                 # Generate a random price for selling 1 item
-                price = np.random.randint(1, 1000)  # Random price between 1-1000 coins
+                price = np.random.randint(1, self.env.max_order_price + 1)
                 valid_trades.append({
                     'action_type': "Trade", 
                     'action_args': f"Sell {item} {price}"
@@ -270,13 +278,14 @@ class MobileAgent(BaseAgent):
         # Valid buy orders - can only bid what we can afford (1 item per order)
         if self.inventory["coins"] > 0:
             for item in items:
-                # Generate a random bid price up to our available coins
-                max_bid = self.inventory["coins"]
-                price = np.random.randint(1, max_bid + 1)
-                valid_trades.append({
-                    'action_type': "Trade", 
-                    'action_args': f"Buy {item} {price}"
-                })
+
+                max_bid = min(self.inventory["coins"], self.env.max_order_price)
+                if max_bid > 0:  
+                    price = np.random.randint(1, max_bid + 1)
+                    valid_trades.append({
+                        'action_type': "Trade", 
+                        'action_args': f"Buy {item} {price}"
+                    })
         
         return valid_trades
 
@@ -289,6 +298,10 @@ class MobileAgent(BaseAgent):
         self.metrics_history['stone'].append(self.inventory['stone'])
         self.metrics_history['utility'].append(self.utility[-1])
         self.metrics_history['houses_built'].append(self.total_houses_built)
+        self.metrics_history['active_orders'].append(self.active_orders)
+        self.metrics_history['escrow_coins'].append(self.escrow['coins'])
+        self.metrics_history['escrow_wood'].append(self.escrow['wood'])
+        self.metrics_history['escrow_stone'].append(self.escrow['stone'])
 
     def reset(self):
         pass
@@ -322,6 +335,7 @@ class MobileAgent(BaseAgent):
             return
 
         self.env.current_agent_positions[self.agent_id] = new_location
+        self.movement_history.append(new_location)
 
         action_labour = self.env.move_labour
 

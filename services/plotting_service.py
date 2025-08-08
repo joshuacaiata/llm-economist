@@ -85,9 +85,9 @@ class PlottingService:
     
     def _create_summary_plot(self, agents, plot_path, trading_system=None):
         """Create a summary plot with all metrics including market data if available."""
-        num_rows = 3
-        num_cols = 3
-        fig, axes = plt.subplots(num_rows, num_cols, figsize=(15, 15))
+        num_rows = 2
+        num_cols = 4
+        fig, axes = plt.subplots(num_rows, num_cols, figsize=(20, 10))
         axes = axes.flatten()
         
         # Plot agent metrics
@@ -103,7 +103,7 @@ class PlottingService:
             ax.set_xlabel('Time Step')
             ax.set_ylabel(self._format_metric_name(metric))
             ax.set_title(f'Agent {self._format_metric_name(metric)}')
-            ax.legend()
+            ax.legend(loc='upper left')
             ax.grid(True, alpha=0.3)
         
         # Plot market metrics if trading system is provided
@@ -150,10 +150,6 @@ class PlottingService:
             ax_prices.set_title('Resource Prices')
             ax_prices.legend(loc='upper left')
             ax_prices.grid(True, alpha=0.3)
-            
-            # Plot map state in the last subplot
-            ax_map = axes[8]
-            self._plot_map_state(self.env, agents, ax_map)
         
         plt.tight_layout()
         summary_filepath = os.path.join(plot_path, 'agent_metrics_summary.png')
@@ -224,10 +220,13 @@ class PlottingService:
             
         os.makedirs(plot_path, exist_ok=True)
         
-        # Create figure with enough space for legend
-        plt.figure(figsize=(12, 8))
+        # Create figure with space for legend below
+        fig = plt.figure(figsize=(12, 10))
         ax = plt.gca()
         self._plot_map_state(env, agents, ax)
+        
+        # Adjust layout to make room for legend
+        plt.subplots_adjust(bottom=0.2)  # Make space for legend at bottom
         
         # Save the plot
         filepath = os.path.join(plot_path, 'map_state.png')
@@ -275,7 +274,8 @@ class PlottingService:
         ax.set_yticks(np.arange(0, env.map_size[0], 1))
         
         ax.set_title('Map State')
-        ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        # Place legend below the chart, centered and auto-wrapped
+        ax.legend(bbox_to_anchor=(0.5, -0.1), loc='center', ncol=4, bbox_transform=ax.transAxes)
             
     def plot_market_metrics(self, trading_system, config=None):
         """

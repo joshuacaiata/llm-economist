@@ -42,7 +42,10 @@ class MobileAgent(BaseAgent):
             'escrow_stone': [0]
         }
         self.total_houses_built = 0
-        self.movement_history = []
+        self.decision_history = [] 
+        self.memory_turns = config['llm'].get('memory_turns', 10)
+
+        self.view_size = config['agent_view_size']
 
     def observe(self):
         """
@@ -82,23 +85,32 @@ class MobileAgent(BaseAgent):
             utility += self.env.discount_factor ** (i + 1) * self.utility[i]
 
         # make the prompt:
+        # Get decision history
+
+        decision_history = self.format_decision_history()
+        
         prompt = f"""
         You are a mobile agent in a 2D grid world.
         Your goal is to maximize your utility function.
         The utility function is the sum of the discounted utility of each turn.
-        You are given the following information:
-        - Your inventory
-        - Your location
-        - The neighbourhood
-        - The build payout
-        - Your current utility
 
-        Here are your observation for this turn:
-        - Your location: {location}
-        - Your inventory: {self.inventory}
-        - The neighbourhood: {neighbourhood}
-        - The build payout: {self.build_payout}
-        - Your current utility: {utility}
+        CURRENT STATE:
+        - Location: {location}
+        - Inventory: {self.inventory}
+        - Neighbourhood: {neighbourhood}
+        - Build payout: {self.build_payout}
+        - Current utility: {utility}
+        - Total houses built: {self.total_houses_built}
+        - Active market orders: {self.active_orders}
+        - Resources in escrow: {self.escrow}
+
+        {decision_history}
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
         """
 
         return prompt
@@ -118,6 +130,9 @@ class MobileAgent(BaseAgent):
     def execute_action(self, action):
         action_type = action['action_type']
         action_args = action['action_args']
+        
+        # Record the decision before executing it
+        self.record_decision(action_type, action_args)
 
         if action_type == "Move":
             # For random actions, direction is directly in action_args
@@ -142,6 +157,55 @@ class MobileAgent(BaseAgent):
             pass
 
 
+    def _get_action_descriptions(self):
+        """Generate dynamic descriptions of valid actions."""
+        valid_actions = self._get_valid_actions()
+        
+        # Group actions by type
+        moves = [a['action_args'] for a in valid_actions if a['action_type'] == "Move"]
+        trades = [a['action_args'] for a in valid_actions if a['action_type'] == "Trade"]
+        can_build = any(a['action_type'] == "Build" for a in valid_actions)
+        
+        descriptions = []
+        
+        # Movement description
+        if moves:
+            descriptions.append("You can move in the following directions:")
+            for direction in moves:
+                descriptions.append(f"- {direction}")
+            descriptions.append(f"Moving costs {self.env.move_labour} labour. If you move to a tile with wood or stone, " +
+                             f"you will collect it (costs {self.env.gather_labour} additional labour). " +
+                             f"With probability {self.gather_skill}, you will collect a second unit.")
+        
+        # Trading description
+        if trades:
+            descriptions.append("\nYou can make the following trades:")
+            for trade in trades:
+                parts = trade.split()
+                if parts[0] == "Buy":
+                    max_possible_bid = min(self.inventory['coins'], self.env.max_order_price)
+                    descriptions.append(f"- Buy {parts[1]} (you have {self.inventory['coins']} coins, can bid between 1 and {max_possible_bid} coins)")
+                else:
+                    item = parts[1].lower()
+                    descriptions.append(f"- Sell {parts[1]} (you have {self.inventory[item]} {item}, can ask between 1 and {self.env.max_order_price} coins)")
+            descriptions.append(f"Trading costs {self.env.trade_labour} labour. " +
+                             f"When you place a buy/sell order, your resources are placed in escrow. " +
+                             f"If your order is matched, you'll receive the traded resource/coins. " +
+                             f"If your order expires after {self.env.trading_system.max_order_lifetime} steps, " +
+                             f"your escrowed resources will be returned to you.")
+        
+        # Building description
+        if can_build:
+            descriptions.append("\nYou can build a house:")
+            descriptions.append("- Requires 1 wood and 1 stone")
+            descriptions.append(f"- Rewards {self.build_payout} coins")
+            descriptions.append(f"- Costs {self.env.build_labour} labour")
+        
+        # Always show nothing option
+        descriptions.append("\nYou can always choose to do nothing (costs no labour).")
+        
+        return "\n".join(descriptions)
+
     def get_action(self, observation_prompt=None):
         if observation_prompt is None:
             # Get all valid actions based on current state
@@ -155,43 +219,26 @@ class MobileAgent(BaseAgent):
             action = np.random.choice(valid_actions)
             return action
 
+
+        # Get dynamic action descriptions based on current state
+        action_descriptions = self._get_action_descriptions()
         
-
-
         prompt = f"""
-        You can take one of the following actions:
-        - Move
-        - Trade
-        - Build
+        Here are the actions available to you this turn:
+        {action_descriptions}
 
-        If you decide to move, you can move in the following directions:
-        - Up
-        - Down
-        - Left
-        - Right
-        You will move one tile, if possible. If you cannot move, you will stay in the same tile.
-
-        If you decide to trade, you can buy or sell the following items:
-        - Wood
-        - Stone
-        If you place a sell order and you do not have the item, you will not be able to sell it.
-        If you place a buy order and you do not have the coins, you will not be able to buy it.
-        If you can place the order, your resources will be placed into escrow until the order is filled.
-        Once the order is filled, your inventory will be updated accordingly.
-
-        You may also decide to do nothing.
-
-        Please respond with the following format:
+        Please respond with your chosen action in the following format:
         Action, Arguments
 
-        For example:
-        Move, Up
-        Move, Down
-        Buy, Wood 10
-        Sell, Stone 5
-        Nothing, Nothing
+        Examples:
+        - To move: "Move, Up"
+        - To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+        - To build: "Build, "
+        - To do nothing: "Nothing, Nothing"
 
-        If your response is of an invalid format, you will do nothing.
+        Your response must match one of the available actions exactly.
+        Return nothing else in your response except the action and correct arguments.
+        If your response is invalid, you will do nothing, or conduct undefined behaviour.
         """
 
         prompt_to_llm = observation_prompt + "\n" + prompt
@@ -289,9 +336,76 @@ class MobileAgent(BaseAgent):
         
         return valid_trades
 
+    def record_decision(self, action_type, action_args):
+        """Record a decision and its outcome."""
+        # Get state before action
+        prev_state = {
+            'location': self.env.current_agent_positions[self.agent_id],
+            'wood': self.inventory['wood'],
+            'stone': self.inventory['stone'],
+            'coins': self.inventory['coins'],
+            'utility': self.utility[-1] if self.utility else 0
+        }
+        
+        # Store the decision
+        self.decision_history.append({
+            'state': prev_state,
+            'action': f"{action_type}, {action_args}",
+            'outcome': None  # Will be updated after we see the results
+        })
+        
+        # Keep only last N turns
+        if len(self.decision_history) > self.memory_turns:
+            self.decision_history.pop(0)
+
+    def update_last_decision_outcome(self):
+        """Update the outcome of the last decision after seeing its results."""
+        if not self.decision_history:
+            return
+            
+        last_decision = self.decision_history[-1]
+        prev_state = last_decision['state']
+        
+        # Calculate changes
+        changes = {
+            'wood': self.inventory['wood'] - prev_state['wood'],
+            'stone': self.inventory['stone'] - prev_state['stone'],
+            'coins': self.inventory['coins'] - prev_state['coins'],
+            'utility': self.utility[-1] - prev_state['utility']
+        }
+        
+        # Format outcome string
+        outcome_parts = []
+        if changes['wood'] != 0:
+            outcome_parts.append(f"wood {changes['wood']:+d}")
+        if changes['stone'] != 0:
+            outcome_parts.append(f"stone {changes['stone']:+d}")
+        if changes['coins'] != 0:
+            outcome_parts.append(f"coins {changes['coins']:+d}")
+        outcome_parts.append(f"utility {changes['utility']:+.2f}")
+        
+        last_decision['outcome'] = ", ".join(outcome_parts)
+
+    def format_decision_history(self):
+        """Format decision history for the prompt."""
+        if not self.decision_history:
+            return "No previous decisions.\n"
+            
+        history = ["RECENT DECISIONS:"]
+        for i, decision in enumerate(self.decision_history):
+            state = decision['state']
+            turn_str = f"Turn {i+1}: At {state['location']} with {state['wood']} wood, {state['stone']} stone, {state['coins']} coins\n"
+            turn_str += f"Action: {decision['action']}"
+            if decision['outcome']:
+                turn_str += f" -> {decision['outcome']}"
+            history.append(turn_str)
+            
+        return "\n".join(history) + "\n"
+
     def record_metrics(self):
         """Record current metrics for tracking over time."""
         self.get_utility()
+        self.update_last_decision_outcome()  # Update the outcome of the last decision
         
         self.metrics_history['coins'].append(self.inventory['coins'])
         self.metrics_history['wood'].append(self.inventory['wood'])
@@ -335,7 +449,6 @@ class MobileAgent(BaseAgent):
             return
 
         self.env.current_agent_positions[self.agent_id] = new_location
-        self.movement_history.append(new_location)
 
         action_labour = self.env.move_labour
 

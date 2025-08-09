@@ -3,6 +3,7 @@ import random
 from agents.mobile_agent import MobileAgent
 from services.plotting_service import PlottingService
 from services.trading_system import TradingSystem
+from services.llm_services import create_llm
 
 class EconomyEnv:
     def __init__(self, config: dict):
@@ -20,7 +21,7 @@ class EconomyEnv:
         self.discount_factor = config['discount_factor']
         self.action_mechanism = config['action_mechanism']
         self.gather_skill_range = config['gather_skill_range']
-
+    
         self.move_labour = config['move_labour']
         self.build_labour = config['build_labour']
         self.trade_labour = config['trade_labour']
@@ -44,7 +45,11 @@ class EconomyEnv:
                     ),
                     self.risk_aversion,
                     self,
-                    None, # TODO: pass in an instance of the llm
+                    create_llm({
+                        **config['llm'],
+                        'log_dir': config['llm'].get('log_dir', 'logs'),
+                        'log_file': config['llm'].get('log_file', 'llm_conversation.txt')
+                    }),
                     self.action_mechanism,
                     random.uniform(self.gather_skill_range[0], self.gather_skill_range[1])
                 )
@@ -171,7 +176,8 @@ class EconomyEnv:
         self.time = 0
 
     def run_economy(self):
-        for i in range(self.episode_length):
+        from tqdm import tqdm
+        for i in tqdm(range(self.episode_length), desc="Running simulation"):
             self.step()
             
         return self.mobile_agents

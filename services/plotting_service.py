@@ -251,15 +251,16 @@ class PlottingService:
         # Plot agent paths with different colors
         colors = plt.cm.rainbow(np.linspace(0, 1, len(agents)))
         for agent, color in zip(agents, colors):
-            # Plot starting position (triangle)
+            # Plot movement path including start position
             start_pos = env.initial_agent_positions[agent.agent_id]
+            if hasattr(agent, 'movement_history') and agent.movement_history:
+                # Include start position in the path
+                full_path = np.array([start_pos] + agent.movement_history)
+                ax.plot(full_path[:, 1], full_path[:, 0], '-', color=color, alpha=0.5, linewidth=2)
+            
+            # Plot start position marker (triangle)
             ax.plot(start_pos[1], start_pos[0], marker='^', color=color, markersize=10, 
                    label=f'Agent {agent.agent_id} Start')
-            
-            # Plot movement path
-            if hasattr(agent, 'movement_history') and agent.movement_history:
-                path = np.array(agent.movement_history)
-                ax.plot(path[:, 1], path[:, 0], '-', color=color, alpha=0.5, linewidth=2)
             
             # Plot current position (circle)
             end_pos = env.current_agent_positions[agent.agent_id]

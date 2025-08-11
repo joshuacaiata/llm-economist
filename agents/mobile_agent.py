@@ -42,7 +42,8 @@ class MobileAgent(BaseAgent):
             'escrow_stone': [0]
         }
         self.total_houses_built = 0
-        self.decision_history = [] 
+        self.movement_history = []
+        self.decision_history = []
         self.memory_turns = config['llm'].get('memory_turns', 10)
 
         self.view_size = config['agent_view_size']
@@ -449,6 +450,7 @@ class MobileAgent(BaseAgent):
             return
 
         self.env.current_agent_positions[self.agent_id] = new_location
+        self.movement_history.append(new_location)
 
         action_labour = self.env.move_labour
 

@@ -32,7 +32,16 @@ class EconomyEnv:
 
         self.n_agents = config['n_agents']
         self.mobile_agents = []
+
         for i in range(self.n_agents):
+            llm = None
+            if self.action_mechanism == "llm":
+                llm = create_llm({
+                    **config['llm'],
+                    'log_dir': config['llm'].get('log_dir', 'logs'),
+                    'log_file': config['llm'].get('log_file', 'llm_conversation.txt')
+                })
+
             self.mobile_agents.append(
                 MobileAgent(
                     "MobileAgent",
@@ -45,11 +54,7 @@ class EconomyEnv:
                     ),
                     self.risk_aversion,
                     self,
-                    create_llm({
-                        **config['llm'],
-                        'log_dir': config['llm'].get('log_dir', 'logs'),
-                        'log_file': config['llm'].get('log_file', 'llm_conversation.txt')
-                    }),
+                    llm,
                     self.action_mechanism,
                     random.uniform(self.gather_skill_range[0], self.gather_skill_range[1])
                 )

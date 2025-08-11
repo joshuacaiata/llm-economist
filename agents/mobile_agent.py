@@ -377,11 +377,11 @@ class MobileAgent(BaseAgent):
         # Format outcome string
         outcome_parts = []
         if changes['wood'] != 0:
-            outcome_parts.append(f"wood {changes['wood']:+d}")
+            outcome_parts.append(f"wood {changes['wood']:+.0f}")
         if changes['stone'] != 0:
-            outcome_parts.append(f"stone {changes['stone']:+d}")
+            outcome_parts.append(f"stone {changes['stone']:+.0f}")
         if changes['coins'] != 0:
-            outcome_parts.append(f"coins {changes['coins']:+d}")
+            outcome_parts.append(f"coins {changes['coins']:+.0f}")
         outcome_parts.append(f"utility {changes['utility']:+.2f}")
         
         last_decision['outcome'] = ", ".join(outcome_parts)

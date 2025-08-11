@@ -14,7 +14,7 @@ config = {
     'build_payout_max': 20,
     'build_payout_multiplier': 1.5,
     'risk_aversion': 0.5,
-    'n_agents': 6,
+    'n_agents': 10,
     'discount_factor': 0.95,
     'action_mechanism': "random",
     'episode_length': 1000,

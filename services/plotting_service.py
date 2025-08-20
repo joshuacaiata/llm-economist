@@ -51,6 +51,8 @@ class PlottingService:
         self.plot_yearly_income(agents, plot_path)
         if env and env.planner:
             self.plot_tax_rates(env.planner, plot_path)
+            self.plot_tax_collection(env.planner, plot_path) 
+            self.plot_planner_utility(env.planner, plot_path)
         
         print(f"All agent metrics plots saved successfully to {plot_path}!")
     
@@ -419,6 +421,48 @@ class PlottingService:
         
         # Save the plot
         filename = 'tax_rates.png'
+        filepath = os.path.join(plot_path, filename)
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"Saved {filename}")
+
+    def plot_planner_utility(self, planner, plot_path):
+        """Plot the planner's utility history."""
+        plt.figure(figsize=(10, 6))
+        
+        time_steps = range(len(planner.utility_history))
+        plt.plot(time_steps, planner.utility_history, label=planner.utility_type.replace('_', ' ').title(), linewidth=2)
+        
+        plt.xlabel('Time Step')
+        plt.ylabel('Utility Value')
+        plt.title(f'Planner {planner.utility_type.replace("_", " ").title()} Utility Over Time')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Save the plot
+        filename = 'planner_utility.png'
+        filepath = os.path.join(plot_path, filename)
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"Saved {filename}")
+
+    def plot_tax_collection(self, planner, plot_path):
+        """Plot the history of collected taxes over time."""
+        plt.figure(figsize=(10, 6))
+        
+        time_steps = range(len(planner.tax_collection_history))
+        plt.plot(time_steps, planner.tax_collection_history, linewidth=2, label='Collected Taxes')
+        
+        plt.xlabel('Time Step')
+        plt.ylabel('Coins')
+        plt.title('Tax Collection Over Time')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Save the plot
+        filename = 'tax_collection.png'
         filepath = os.path.join(plot_path, filename)
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()

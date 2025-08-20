@@ -24,8 +24,18 @@ class PlannerAgent(BaseAgent):
         self.tax_rates = config['default_tax_rates']
         self.tax_collection_history = []
         self.tax_bracket_history = [self.tax_rates]
+        self.utility_type = config['planner_utility_type']
+        self.fixed_tax_rates = config['fixed_tax_rates']
+        
         assert self.num_tax_brackets + 1 == len(self.tax_rates), "Number of tax brackets and tax rates must match"
+        assert self.utility_type in ["utilitarian", "nash_welfare"], "Invalid utility type"
 
+        if self.utility_type == "utilitarian":
+            self.utility_function = self.get_utilitarian_utility
+        elif self.utility_type == "nash_welfare":
+            self.utility_function = self.get_nash_welfare_utility
+
+        self.utility_history = []
 
 
     def observe(self):
@@ -47,11 +57,16 @@ class PlannerAgent(BaseAgent):
         else:  # random
             tax_rates = self.get_tax_rates()
         self.execute_action(tax_rates)
+        self.utility_history.append(self.utility_function())
 
     def reset(self):
         self.tax_rates = self.original_tax_rates
+        self.utility_history = []
 
     def get_tax_rates(self, prompt=None):
+        if self.fixed_tax_rates:
+            return self.tax_rates
+        
         if prompt is None:
             # set tax rates at random, each between 0 and 1
             tax_rates = np.random.uniform(0, 1, self.num_tax_brackets)
@@ -70,6 +85,7 @@ class PlannerAgent(BaseAgent):
             
             # get the agents income
             income = agent.get_income()
+
 
             # calculate the taxes owed using tax brackets 
             taxes_owed = self.calculate_taxes_owed(income, self.tax_rates)
@@ -112,4 +128,78 @@ class PlannerAgent(BaseAgent):
             total_tax += remaining_income * tax_rates[-1]
         
         return total_tax
+
+    def calculate_gini(self, values):
+        """Calculate the Gini coefficient of a list of values."""
+        if not values or len(values) <= 1:
+            return 0
+        
+        sorted_values = sorted(values)
+        n = len(values)
+        cumsum = 0
+        for i, value in enumerate(sorted_values):
+            cumsum += (n - i) * value
+        
+        return (2 * cumsum) / (n * sum(values)) - (n + 1) / n
+
+    def get_utilitarian_utility(self):
+        """Calculate utility with weights inversely proportional to agent wealth."""
+        agent_coins = {
+            agent.agent_id: max(1e-8, agent.inventory["coins"])
+            for agent in self.env.mobile_agents
+            if agent.agent_id != self.agent_id
+        }
+        
+        agent_utilities = {}
+        for agent in self.env.mobile_agents:
+            if agent.agent_id == self.agent_id:
+                continue
+            utility = agent.get_utility()
+            if utility is not None:
+                agent_utilities[agent.agent_id] = utility
+
+        # If no valid utilities, return 0
+        if not agent_utilities:
+            return 0
+
+        inverse_weights = {
+            agent_id: 1.0 / coins
+            for agent_id, coins in agent_coins.items()
+            if agent_id in agent_utilities 
+        }
+        
+        total_inverse_weight = sum(inverse_weights.values())
+        if total_inverse_weight > 0:
+            normalized_weights = {
+                agent_id: weight / total_inverse_weight
+                for agent_id, weight in inverse_weights.items()
+            }
+        else:
+            normalized_weights = {
+                agent_id: 1.0 / len(agent_utilities)
+                for agent_id in agent_utilities.keys()
+            }
+        
+        return sum(
+            normalized_weights[agent_id] * agent_utilities[agent_id]
+            for agent_id in agent_utilities.keys()
+        )
+        
+    def get_nash_welfare_utility(self):
+        """Calculate Nash welfare utility based on coins and equality."""
+        coins = [
+            agent.inventory["coins"] 
+            for agent in self.env.mobile_agents 
+            if agent.agent_id != self.agent_id
+        ]
+        n_agents = len(coins)
+
+        if n_agents <= 1:
+            return sum(coins)
+        
+        gini = self.calculate_gini(coins)
+        equality = 1 - (n_agents / (n_agents - 1)) * gini
+        productivity = sum(coins)
+
+        return equality * productivity
         

@@ -276,9 +276,9 @@ class MobileAgent(BaseAgent):
         if self._is_valid_build(location):
             valid_actions.append({'action_type': "Build", 'action_args': ""})
         
-        # Check valid trades
-        valid_trades = self._get_valid_trades()
-        valid_actions.extend(valid_trades)
+        if self.env.config.get('trading_system', False):
+            valid_trades = self._get_valid_trades()
+            valid_actions.extend(valid_trades)
         
         # Always allow doing nothing
         valid_actions.append({'action_type': "Nothing", 'action_args': "Nothing"})
@@ -342,11 +342,16 @@ class MobileAgent(BaseAgent):
             for item in items:
 
                 max_bid = min(self.inventory["coins"], self.env.max_order_price)
-                if max_bid > 0:  
+                if max_bid > 1:
                     price = np.random.randint(1, max_bid + 1)
                     valid_trades.append({
                         'action_type': "Trade", 
                         'action_args': f"Buy {item} {price}"
+                    })
+                elif max_bid == 1:
+                    valid_trades.append({
+                        'action_type': "Trade", 
+                        'action_args': f"Buy {item} 1"
                     })
         
         return valid_trades
@@ -454,7 +459,9 @@ class MobileAgent(BaseAgent):
             base_utility = (self.inventory["coins"] ** (1 - self.risk_aversion) - 1) / (1 - self.risk_aversion)
 
         labour_cost = sum(self.labour)
-        self.utility.append(base_utility - labour_cost)
+        utility_value = base_utility - labour_cost
+        self.utility.append(utility_value)
+        return utility_value
 
 
     def move(self, direction):

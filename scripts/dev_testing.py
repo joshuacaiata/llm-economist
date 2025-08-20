@@ -10,8 +10,8 @@ config = {
     'map_size': (40, 40),
     'wood_regen_prob': 0.5,
     'stone_regen_prob': 0.5,
-    'build_payout_min': 10,
-    'build_payout_max': 20,
+    'build_payout_min': 0,
+    'build_payout_max': 100,
     'build_payout_multiplier': 1.5,
     'risk_aversion': 0.5,
     'n_agents': 6,
@@ -38,8 +38,11 @@ config = {
     },
     'agent_view_size': 10,
     'tax_brackets': [11601, 47151, 100526, 191951, 243726, 609351],
-    'default_tax_rates': [0.1, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37],
-    'year_length': 1000
+    'default_tax_rates': [0.0, 0.1, 0.48, 0.52, 0.88, 0.92, 0.99],
+    'fixed_tax_rates': True,
+    'year_length': 1000,
+    'planner_utility_type': "utilitarian",
+    'trading_system': True
 }
 
 env = EconomyEnv(config)

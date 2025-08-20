@@ -46,16 +46,20 @@ class EconomyEnv:
                     'log_file': config['llm'].get('log_file', 'llm_conversation.txt')
                 })
 
+            build_payout = self.build_payout_multiplier * (
+                random.randint(
+                    self.build_payout_min, 
+                    self.build_payout_max)
+            )
+
+            print(f"Agent {i} build payout: {build_payout}")
+
             self.mobile_agents.append(
                 MobileAgent(
                     "MobileAgent",
                     i,
                     config,
-                    self.build_payout_multiplier * (
-                        random.randint(
-                            self.build_payout_min, 
-                            self.build_payout_max)
-                    ),
+                    build_payout,
                     self.risk_aversion,
                     self,
                     llm,
@@ -78,7 +82,7 @@ class EconomyEnv:
 
         self.episode_length = config['episode_length']
 
-        self.trading_system = TradingSystem(config, self)
+        self.trading_system = TradingSystem(config, self) if config.get('trading_system', False) else None
         
         self.plotting_service = PlottingService()
 
@@ -161,7 +165,10 @@ class EconomyEnv:
     def step(self):
         for agent in self.mobile_agents:
             agent.step()
-        self.trading_system.step()
+        
+        if self.trading_system:
+            self.trading_system.step()
+            
         self.regenerate_tiles()
 
         if self.time > 0 and self.time % self.year_length == 0:
@@ -195,7 +202,8 @@ class EconomyEnv:
                 agent.position = self.agent_initial_positions[agent.agent_id]
 
         # clear all orders
-        self.trading_system.reset_episode()
+        if self.trading_system:
+            self.trading_system.reset_episode()
         self.time = 0
 
     def run_economy(self):
@@ -207,7 +215,12 @@ class EconomyEnv:
 
     def plot_agent_metrics(self):
         """Plot and save agent metrics over time using the plotting service."""
-        self.plotting_service.plot_agent_metrics(self.mobile_agents, self.config, self.trading_system, self)
+        self.plotting_service.plot_agent_metrics(
+            self.mobile_agents, 
+            self.config, 
+            self.trading_system if self.config.get('trading_system', False) else None, 
+            self
+        )
         self.plotting_service.plot_map_state(self, self.mobile_agents, self.config)
     
     def plot_specific_metric(self, metric, filename=None):

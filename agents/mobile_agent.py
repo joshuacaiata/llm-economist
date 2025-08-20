@@ -30,6 +30,8 @@ class MobileAgent(BaseAgent):
         self.gather_skill = gather_skill
         self.active_orders = 0
 
+        self.last_year_coins = 0
+
         self.metrics_history = {
             'coins': [0],
             'wood': [0], 
@@ -89,6 +91,9 @@ class MobileAgent(BaseAgent):
         # Get decision history
 
         decision_history = self.format_decision_history()
+
+        # get sorted income distribution
+        income_distribution = self.get_income_distribution()
         
         prompt = f"""
         You are a mobile agent in a 2D grid world.
@@ -104,6 +109,10 @@ class MobileAgent(BaseAgent):
         - Total houses built: {self.total_houses_built}
         - Active market orders: {self.active_orders}
         - Resources in escrow: {self.escrow}
+        - Income: {self.get_income()}
+        - Tax bracket: {self.get_tax_bracket()}
+        - Tax rates: {self.env.planner.tax_rates}
+        - Sorted anonymized income distribution: {income_distribution}
 
         {decision_history}
 
@@ -118,13 +127,14 @@ class MobileAgent(BaseAgent):
 
     def step(self):
         # this function will step. so we need to observe, then get the action, then execute the action
+        if self.action_mechanism not in ["llm", "random"]:
+            raise ValueError(f"Invalid agent action mechanism: {self.action_mechanism}")
+            
         if self.action_mechanism == "llm":
             prompt = self.observe()
             action = self.get_action(prompt)
-        elif self.action_mechanism == "random":
+        else:  # random
             action = self.get_action()
-        else:
-            raise ValueError(f"Invalid action mechanism: {self.action_mechanism}")
         self.execute_action(action)
         self.record_metrics()
 
@@ -157,6 +167,10 @@ class MobileAgent(BaseAgent):
         else:
             pass
 
+    def get_income_distribution(self):
+        # get sorted income distribution
+        income_distribution = sorted(self.env.mobile_agents, key=lambda x: x.get_income())
+        return income_distribution
 
     def _get_action_descriptions(self):
         """Generate dynamic descriptions of valid actions."""
@@ -419,7 +433,19 @@ class MobileAgent(BaseAgent):
         self.metrics_history['escrow_stone'].append(self.escrow['stone'])
 
     def reset(self):
-        pass
+        self.last_year_coins = 0
+        self.inventory = {'wood': 0, 'stone': 0, 'coins': 0}
+        self.escrow = {'wood': 0, 'stone': 0, 'coins': 0}
+        self.utility = [0]
+        self.labour = [0]
+        self.movement_history = []
+        self.decision_history = []
+
+    def reset_year(self):
+        self.last_year_coins = self.inventory['coins']
+
+    def get_income(self):
+        return self.inventory['coins'] - self.last_year_coins
 
     def get_utility(self):
         if self.risk_aversion == 1:
@@ -477,7 +503,6 @@ class MobileAgent(BaseAgent):
     def build(self):
         # build if we have at least one wood and one stone
         # and if the location is buildable
-
         location = self.env.current_agent_positions[self.agent_id]
         if self.env.map["Buildable"][location[0], location[1]] == 0:
             return

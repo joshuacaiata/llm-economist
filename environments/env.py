@@ -1,6 +1,7 @@
 import numpy as np
 import random
 from agents.mobile_agent import MobileAgent
+from agents.planner_agent import PlannerAgent
 from services.plotting_service import PlottingService
 from services.trading_system import TradingSystem
 from services.llm_services import create_llm
@@ -19,7 +20,8 @@ class EconomyEnv:
         self.build_payout_multiplier = config['build_payout_multiplier']
         self.risk_aversion = config['risk_aversion']
         self.discount_factor = config['discount_factor']
-        self.action_mechanism = config['action_mechanism']
+        self.agent_action_mechanism = config['agent_action_mechanism']
+        self.planner_action_mechanism = config['planner_action_mechanism']
         self.gather_skill_range = config['gather_skill_range']
     
         self.move_labour = config['move_labour']
@@ -28,6 +30,8 @@ class EconomyEnv:
         self.gather_labour = config['gather_labour']
         self.max_order_price = config['max_order_price']
 
+        self.year_length = config['year_length']
+
         self.map = self.generate_map()
 
         self.n_agents = config['n_agents']
@@ -35,7 +39,7 @@ class EconomyEnv:
 
         for i in range(self.n_agents):
             llm = None
-            if self.action_mechanism == "llm":
+            if self.agent_action_mechanism == "llm":
                 llm = create_llm({
                     **config['llm'],
                     'log_dir': config['llm'].get('log_dir', 'logs'),
@@ -55,11 +59,20 @@ class EconomyEnv:
                     self.risk_aversion,
                     self,
                     llm,
-                    self.action_mechanism,
+                    self.agent_action_mechanism,
                     random.uniform(self.gather_skill_range[0], self.gather_skill_range[1])
                 )
             )
         
+        self.planner = PlannerAgent(
+            "PlannerAgent",
+            self.n_agents,
+            config,
+            self,
+            None,
+            self.planner_action_mechanism
+        )
+
         self.initial_agent_positions = self.initialize_agents()
         self.current_agent_positions = self.initial_agent_positions.copy()
 
@@ -150,6 +163,11 @@ class EconomyEnv:
             agent.step()
         self.trading_system.step()
         self.regenerate_tiles()
+
+        if self.time > 0 and self.time % self.year_length == 0:
+            self.planner.step()
+            self.reset_year()
+
         self.time += 1
 
     def reset_year(self):

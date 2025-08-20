@@ -47,6 +47,11 @@ class PlottingService:
         if trading_system:
             self.plot_market_metrics(trading_system, config)
         
+        # Add the new plots
+        self.plot_yearly_income(agents, plot_path)
+        if env and env.planner:
+            self.plot_tax_rates(env.planner, plot_path)
+        
         print(f"All agent metrics plots saved successfully to {plot_path}!")
     
     def _get_plot_path(self, config):
@@ -349,3 +354,73 @@ class PlottingService:
         plt.close()
         
         print("Saved market_prices.png")
+
+    def plot_yearly_income(self, agents, plot_path):
+        """Plot yearly income for each agent."""
+        plt.figure(figsize=(10, 6))
+        
+        # Calculate yearly incomes for each agent
+        for agent in agents:
+            # Get income at year intervals
+            yearly_incomes = []
+            for i in range(len(agent.metrics_history['coins'])):
+                if i % agent.env.year_length == 0:
+                    if i == 0:
+                        yearly_incomes.append(0)  # First year has no income
+                    else:
+                        # Calculate income as difference from last year
+                        current_coins = agent.metrics_history['coins'][i]
+                        last_year_coins = agent.metrics_history['coins'][i - agent.env.year_length]
+                        yearly_incomes.append(current_coins - last_year_coins)
+            
+            years = range(len(yearly_incomes))
+            plt.plot(years, yearly_incomes, label=f'Agent {agent.agent_id}', linewidth=2)
+        
+        plt.xlabel('Year')
+        plt.ylabel('Income')
+        plt.title('Yearly Income by Agent')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Save the plot
+        filename = 'agent_yearly_income.png'
+        filepath = os.path.join(plot_path, filename)
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"Saved {filename}")
+
+    def plot_tax_rates(self, planner, plot_path):
+        """Plot tax rates over time with dynamic bracket ranges."""
+        plt.figure(figsize=(10, 6))
+        
+        # Get tax rates and brackets history
+        tax_brackets = planner.tax_brackets
+        
+        # Create labels for the legend that show the bracket ranges
+        labels = []
+        labels.append(f'0-{tax_brackets[0]}')  # First bracket
+        for i in range(len(tax_brackets)-1):
+            labels.append(f'{tax_brackets[i]}-{tax_brackets[i+1]}')
+        labels.append(f'{tax_brackets[-1]}+')  # Last bracket
+        
+        # Plot each tax rate over time
+        time_steps = range(len(planner.tax_bracket_history))
+        for bracket_idx in range(len(planner.tax_rates)):
+            # Extract the tax rate for this bracket at each time step
+            rates = [tax_rates[bracket_idx] for tax_rates in planner.tax_bracket_history]
+            plt.plot(time_steps, rates, label=labels[bracket_idx], linewidth=2)
+        
+        plt.xlabel('Time Step')
+        plt.ylabel('Tax Rate')
+        plt.title('Tax Rates by Income Bracket')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Save the plot
+        filename = 'tax_rates.png'
+        filepath = os.path.join(plot_path, filename)
+        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"Saved {filename}")

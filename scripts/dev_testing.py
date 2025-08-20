@@ -14,10 +14,11 @@ config = {
     'build_payout_max': 20,
     'build_payout_multiplier': 1.5,
     'risk_aversion': 0.5,
-    'n_agents': 2,
+    'n_agents': 6,
     'discount_factor': 0.95,
-    'action_mechanism': "random",
-    'episode_length': 1000,
+    'agent_action_mechanism': "random",
+    'planner_action_mechanism': "random",
+    'episode_length': 10000,
     'plot_path': 'plots',
     'gather_skill_range': (0.0, 1.0),
     'move_labour': 0.21,
@@ -35,7 +36,10 @@ config = {
         'log_dir': 'logs',
         'log_file': 'llm_conversation.txt' 
     },
-    'agent_view_size': 10
+    'agent_view_size': 10,
+    'tax_brackets': [11601, 47151, 100526, 191951, 243726, 609351],
+    'default_tax_rates': [0.1, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37],
+    'year_length': 1000
 }
 
 env = EconomyEnv(config)

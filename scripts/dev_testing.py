@@ -6,19 +6,19 @@ import os
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 config = {
-    'map_path': 'maps/env-pure_and_mixed-40x40.txt',
-    'map_size': (40, 40),
-    'wood_regen_prob': 0.5,
-    'stone_regen_prob': 0.5,
+    'map_path': 'maps/env-pure_and_mixed-15x15.txt',
+    'map_size': (15, 15),
+    'wood_regen_prob': 1.0,
+    'stone_regen_prob': 1.0,
     'build_payout_min': 0,
     'build_payout_max': 100,
     'build_payout_multiplier': 1.5,
     'risk_aversion': 0.5,
-    'n_agents': 6,
+    'n_agents': 2, 
     'discount_factor': 0.95,
-    'agent_action_mechanism': "random",
-    'planner_action_mechanism': "random",
-    'episode_length': 10000,
+    'agent_action_mechanism': "llm",
+    'planner_action_mechanism': "llm",
+    'episode_length': 100,
     'plot_path': 'plots',
     'gather_skill_range': (0.0, 1.0),
     'move_labour': 0.21,
@@ -28,20 +28,25 @@ config = {
     'max_order_lifetime': 50,
     'max_order_price': 1000,
     'llm': {
-        'type': 'openai',
-        'model': 'gpt-4o-mini',
-        'temperature': 0.5,
-        'api_key': os.getenv('OPENAI_API_KEY'),
-        'memory_turns': 10,
+        'type': 'ollama',
+        'model': 'qwen2.5:1.5b',
+        'temperature': 0.7,
+        'base_url': 'http://localhost:11434',
+        'memory_turns': 100,
         'log_dir': 'logs',
-        'log_file': 'llm_conversation.txt' 
+        'log_file': 'mobile_agent_conversation.txt',
+        'planner_log_file': 'planner_conversation.txt'
     },
     'agent_view_size': 10,
-    'tax_brackets': [11601, 47151, 100526, 191951, 243726, 609351],
+
+    
+    "planner": False,
+    'tax_brackets': [11, 47, 100, 191, 243, 609], #[11601, 47151, 100526, 191951, 243726, 609351],
     'default_tax_rates': [0.0, 0.1, 0.48, 0.52, 0.88, 0.92, 0.99],
-    'fixed_tax_rates': True,
-    'year_length': 1000,
+    'fixed_tax_rates': False, 
+    'year_length': 10,
     'planner_utility_type': "utilitarian",
+    'planner_memory_turns': 10,
     'trading_system': True
 }
 

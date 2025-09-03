@@ -31,7 +31,7 @@ class EconomyEnv:
         self.max_order_price = config['max_order_price']
 
         self.year_length = config['year_length']
-
+        self.planner_enabled = config.get('planner', True)  
         self.map = self.generate_map()
 
         self.n_agents = config['n_agents']
@@ -68,14 +68,25 @@ class EconomyEnv:
                 )
             )
         
-        self.planner = PlannerAgent(
-            "PlannerAgent",
-            self.n_agents,
-            config,
-            self,
-            None,
-            self.planner_action_mechanism
-        )
+        if self.planner_enabled:
+            planner_llm = None
+            if self.planner_action_mechanism == "llm":
+                planner_llm = create_llm({
+                    **config['llm'],
+                    'log_dir': config['llm'].get('log_dir', 'logs'),
+                    'log_file': config['llm'].get('planner_log_file', 'planner_conversation.txt')
+                })
+            
+            self.planner = PlannerAgent(
+                "PlannerAgent",
+                self.n_agents,
+                config,
+                self,
+                planner_llm,
+                self.planner_action_mechanism
+            )
+        else:
+            self.planner = None
 
         self.initial_agent_positions = self.initialize_agents()
         self.current_agent_positions = self.initial_agent_positions.copy()
@@ -87,6 +98,13 @@ class EconomyEnv:
         self.plotting_service = PlottingService()
 
         self.time = 0
+
+    @property
+    def time_to_next_tax_year(self):
+        """Calculate steps until next tax collection."""
+        if not self.planner_enabled:
+            return None
+        return self.year_length - (self.time % self.year_length)
 
     def generate_map(self):
         map_dict = {
@@ -171,21 +189,13 @@ class EconomyEnv:
             
         self.regenerate_tiles()
 
-        if self.time > 0 and self.time % self.year_length == 0:
+        if self.time > 0 and self.time % self.year_length == 0 and self.planner_enabled:
             self.planner.step()
-            self.reset_year()
 
         self.time += 1
 
-    def reset_year(self):
-        # For each agent, call reset year
-        shuffled_agents = random.sample(self.mobile_agents, len(self.mobile_agents))
-
-        for agent in shuffled_agents:
-            agent.reset_year()
 
     def reset_env(self, randomize_agent_positions=False):
-        # Undo all houses (set to 0)
         self.map["Houses"] = np.zeros(self.map_size, dtype=int)
 
         # Clear all agents inventory
@@ -210,6 +220,8 @@ class EconomyEnv:
         from tqdm import tqdm
         for i in tqdm(range(self.episode_length), desc="Running simulation"):
             self.step()
+            if self.time % self.year_length == 0 and self.time > 0:
+                self.plot_agent_metrics()
             
         return self.mobile_agents
 

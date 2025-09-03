@@ -56,7 +56,6 @@ class MobileAgent(BaseAgent):
         1. Neighbourhood (everything in the view_size radius)
         2. Inventory
         3. Build payout
-        TODO:
         4. Taxation 
             i. Planner tax schedule
             ii. Agents current tax bracket
@@ -72,15 +71,7 @@ class MobileAgent(BaseAgent):
         """
         # get the location
         location = self.env.current_agent_positions[self.agent_id]
-        # get the neighbourhood
-        neighbourhood = {}
-        env_map = self.env.map
-        for level in env_map.keys():
-            x_upper = max(0, location[0] - self.view_size)
-            x_lower = min(self.env.map_size[0], location[0] + self.view_size)
-            y_upper = max(0, location[1] - self.view_size)
-            y_lower = min(self.env.map_size[1], location[1] + self.view_size)
-            neighbourhood[level] = env_map[level][x_upper:x_lower, y_upper:y_lower]
+        neighbourhood = self.get_readable_neighbourhood(location)
 
         # utility
         utility = self.utility[-1]
@@ -95,24 +86,43 @@ class MobileAgent(BaseAgent):
         # get sorted income distribution
         income_distribution = self.get_income_distribution()
         
-        prompt = f"""
+        base_prompt = f"""
         You are a mobile agent in a 2D grid world.
         Your goal is to maximize your utility function.
         The utility function is the sum of the discounted utility of each turn.
 
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
         CURRENT STATE:
         - Location: {location}
         - Inventory: {self.inventory}
-        - Neighbourhood: {neighbourhood}
+        - Neighbourhood:
+{neighbourhood}
         - Build payout: {self.build_payout}
         - Current utility: {utility}
         - Total houses built: {self.total_houses_built}
         - Active market orders: {self.active_orders}
         - Resources in escrow: {self.escrow}
-        - Income: {self.get_income()}
-        - Tax bracket: {self.get_tax_bracket()}
-        - Tax rates: {self.env.planner.tax_rates}
-        - Sorted anonymized income distribution: {income_distribution}
+        - Income: {self.get_income()}"""
+        
+        if self.env.planner_enabled and self.env.planner is not None:
+            time_to_tax = self.env.time_to_next_tax_year
+            base_prompt += f"""
+        - Current tax bracket: {self.get_tax_bracket()}
+        - Tax rates (by bracket): {[f'{rate:.3f}' for rate in self.env.planner.tax_rates]}
+        - Tax brackets: {self.env.planner.tax_brackets}
+        - Sorted anonymized income distribution: {sorted(income_distribution)}
+        - Time to next tax period: {time_to_tax} steps
+        """
+        
+        prompt = base_prompt + f"""
 
         {decision_history}
 
@@ -120,7 +130,20 @@ class MobileAgent(BaseAgent):
         1. Look for patterns in which actions led to the highest utility gains
         2. Consider your current needs (wood/stone for building, coins for trading)
         3. Think about market timing - when to buy/sell resources
-        4. Plan moves to reach valuable resources in your neighborhood
+        4. Plan moves to reach valuable resources in your neighborhood"""
+        
+        if self.env.planner_enabled and self.env.planner is not None:
+            prompt += """
+        5. Consider tax implications - time earnings around tax periods
+        6. Plan for tax payments based on your current bracket and income
+        7. Consider how your actions affect your taxable income"""
+        
+        prompt += """
+        Some strategies you may consider include:
+        1. Move to valuable resources in your neighborhood and collect them
+        2. Specialize in collecting specific resources (wood or stone) and selling them for coints
+        3. Specialize in building houses and do not focus on collecting resources (meaning, buy them on the market)
+        These are just some examples. What you might end up doing is up to you and what is best for your overall utility.
         """
 
         return prompt
@@ -168,9 +191,68 @@ class MobileAgent(BaseAgent):
             pass
 
     def get_income_distribution(self):
-        # get sorted income distribution
-        income_distribution = sorted(self.env.mobile_agents, key=lambda x: x.get_income())
-        return income_distribution
+        if self.env.planner_enabled and self.env.planner is not None:
+            income_distribution = sorted(self.env.mobile_agents, key=lambda x: x.get_income())
+            return [agent.get_income() for agent in income_distribution]
+        else:
+            return []
+    
+    def get_tax_bracket(self):
+        """Determine which tax bracket this agent is in based on their income."""
+        if not self.env.planner_enabled or self.env.planner is None:
+            return "No taxation"
+        
+        income = self.get_income()
+        tax_brackets = self.env.planner.tax_brackets
+        
+        for i, bracket_threshold in enumerate(tax_brackets):
+            if income <= bracket_threshold:
+                return f"Bracket {i+1} (up to {bracket_threshold})"
+        
+        return f"Bracket {len(tax_brackets)+1} (above {tax_brackets[-1]})"
+
+    def get_readable_neighbourhood(self, location):
+        """Convert the neighbourhood map to readable character representation."""
+        x_upper = max(0, location[0] - self.view_size)
+        x_lower = min(self.env.map_size[0], location[0] + self.view_size + 1)
+        y_upper = max(0, location[1] - self.view_size)
+        y_lower = min(self.env.map_size[1], location[1] + self.view_size + 1)
+        
+        # Get the map slices
+        water = self.env.map["Water"][x_upper:x_lower, y_upper:y_lower]
+        wood = self.env.map["Wood"][x_upper:x_lower, y_upper:y_lower]
+        stone = self.env.map["Stone"][x_upper:x_lower, y_upper:y_lower]
+        houses = self.env.map["Houses"][x_upper:x_lower, y_upper:y_lower]
+        buildable = self.env.map["Buildable"][x_upper:x_lower, y_upper:y_lower]
+        
+        # Create character map
+        char_map = []
+        for i in range(water.shape[0]):
+            row = []
+            for j in range(water.shape[1]):
+                if water[i, j] == 1:
+                    row.append('@')  # Water
+                elif houses[i, j] == 1:
+                    row.append('H')  # House
+                elif wood[i, j] == 1:
+                    row.append('W')  # Wood
+                elif stone[i, j] == 1:
+                    row.append('S')  # Stone
+                elif buildable[i, j] == 1:
+                    row.append('B')  # Buildable
+                else:
+                    row.append('E')  # Empty/unbuildable
+            char_map.append(''.join(row))
+        
+        # Mark your current position with 'X'
+        center_x = location[0] - x_upper
+        center_y = location[1] - y_upper
+        if 0 <= center_x < len(char_map) and 0 <= center_y < len(char_map[0]):
+            row = list(char_map[center_x])
+            row[center_y] = 'X'  # Your position
+            char_map[center_x] = ''.join(row)
+        
+        return '\n'.join(char_map)
 
     def _get_action_descriptions(self):
         """Generate dynamic descriptions of valid actions."""
@@ -239,21 +321,21 @@ class MobileAgent(BaseAgent):
         action_descriptions = self._get_action_descriptions()
         
         prompt = f"""
-        Here are the actions available to you this turn:
-        {action_descriptions}
+Here are the actions available to you this turn:
+{action_descriptions}
 
-        Please respond with your chosen action in the following format:
-        Action, Arguments
+Please respond with your chosen action in the following format:
+Action, Arguments
 
-        Examples:
-        - To move: "Move, Up"
-        - To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
-        - To build: "Build, "
-        - To do nothing: "Nothing, Nothing"
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
 
-        Your response must match one of the available actions exactly.
-        Return nothing else in your response except the action and correct arguments.
-        If your response is invalid, you will do nothing, or conduct undefined behaviour.
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
         """
 
         prompt_to_llm = observation_prompt + "\n" + prompt

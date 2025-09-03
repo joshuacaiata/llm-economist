@@ -40,11 +40,7 @@ class EconomyEnv:
         for i in range(self.n_agents):
             llm = None
             if self.agent_action_mechanism == "llm":
-                llm = create_llm({
-                    **config['llm'],
-                    'log_dir': config['llm'].get('log_dir', 'logs'),
-                    'log_file': config['llm'].get('log_file', 'llm_conversation.txt')
-                })
+                llm = create_llm(config['llm'], agent_type="mobile", agent_id=i, experiment_name=config.get('experiment_name'))
 
             build_payout = self.build_payout_multiplier * (
                 random.randint(
@@ -71,11 +67,7 @@ class EconomyEnv:
         if self.planner_enabled:
             planner_llm = None
             if self.planner_action_mechanism == "llm":
-                planner_llm = create_llm({
-                    **config['llm'],
-                    'log_dir': config['llm'].get('log_dir', 'logs'),
-                    'log_file': config['llm'].get('planner_log_file', 'planner_conversation.txt')
-                })
+                planner_llm = create_llm(config['llm'], agent_type="planner", experiment_name=config.get('experiment_name'))
             
             self.planner = PlannerAgent(
                 "PlannerAgent",

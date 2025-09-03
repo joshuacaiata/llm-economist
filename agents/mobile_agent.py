@@ -110,7 +110,24 @@ class MobileAgent(BaseAgent):
         - Total houses built: {self.total_houses_built}
         - Active market orders: {self.active_orders}
         - Resources in escrow: {self.escrow}
-        - Income: {self.get_income()}"""
+        - Income: {self.get_income()}
+        
+        NAVIGATION HINTS:"""
+        
+        # Add navigation hints
+        nav_hints = self.get_navigation_hints()
+        if nav_hints:
+            for hint in nav_hints:
+                base_prompt += f"\n        - {hint}"
+        else:
+            base_prompt += "\n        - All needed resources are nearby or you have everything you need"
+        
+        if self.inventory['wood'] > 0 and self.inventory['stone'] > 0:
+            location = self.env.current_agent_positions[self.agent_id]
+            if self.env.map["Buildable"][location[0], location[1]] == 1:
+                base_prompt += f"\n        You can build a house here, which gives {self.build_payout} coins"
+        
+        base_prompt += "\n"
         
         if self.env.planner_enabled and self.env.planner is not None:
             time_to_tax = self.env.time_to_next_tax_year
@@ -130,7 +147,9 @@ class MobileAgent(BaseAgent):
         1. Look for patterns in which actions led to the highest utility gains
         2. Consider your current needs (wood/stone for building, coins for trading)
         3. Think about market timing - when to buy/sell resources
-        4. Plan moves to reach valuable resources in your neighborhood"""
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction"""
         
         if self.env.planner_enabled and self.env.planner is not None:
             prompt += """
@@ -139,11 +158,13 @@ class MobileAgent(BaseAgent):
         7. Consider how your actions affect your taxable income"""
         
         prompt += """
-        Some strategies you may consider include:
-        1. Move to valuable resources in your neighborhood and collect them
-        2. Specialize in collecting specific resources (wood or stone) and selling them for coints
-        3. Specialize in building houses and do not focus on collecting resources (meaning, buy them on the market)
-        These are just some examples. What you might end up doing is up to you and what is best for your overall utility.
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
         """
 
         return prompt
@@ -186,7 +207,8 @@ class MobileAgent(BaseAgent):
         elif action_type == "Build":
             self.build()
         elif action_type == "Nothing":
-            pass  # Do nothing
+            nothing_labour = self.env.config.get('nothing_labour', 0.0)
+            self.labour.append(nothing_labour)
         else:
             pass
 
@@ -254,6 +276,85 @@ class MobileAgent(BaseAgent):
         
         return '\n'.join(char_map)
 
+    def find_path_to_nearest(self, resource_type):
+        """Find path to nearest resource, avoiding water."""
+        from collections import deque
+        
+        location = self.env.current_agent_positions[self.agent_id]
+        
+        # Find all positions of this resource type
+        if resource_type == 'wood':
+            resource_positions = list(zip(*np.where(self.env.map["Wood"] == 1)))
+        elif resource_type == 'stone':
+            resource_positions = list(zip(*np.where(self.env.map["Stone"] == 1)))
+        elif resource_type == 'buildable':
+            resource_positions = list(zip(*np.where(self.env.map["Buildable"] == 1)))
+        else:
+            return None
+        
+        if not resource_positions:
+            return None
+        
+        # Simple BFS to find shortest path avoiding water
+        queue = deque([(location, [])])
+        visited = {location}
+        
+        while queue:
+            (x, y), path = queue.popleft()
+            
+            # Check if we reached a target
+            if (x, y) in resource_positions:
+                if len(path) == 0:
+                    return f"You are on {resource_type}!"
+                elif len(path) <= 10:  # Only show if reasonably close
+                    return f"Nearest {resource_type}: {' → '.join(path)} ({len(path)} steps)"
+                else:
+                    return f"Nearest {resource_type}: {len(path)} steps away"
+            
+            # Don't search too far (limit computational cost)
+            if len(path) >= 100:
+                continue
+                
+            # Try all 4 directions
+            for direction, (dx, dy) in [('Up', (-1, 0)), ('Down', (1, 0)), 
+                                       ('Left', (0, -1)), ('Right', (0, 1))]:
+                new_x, new_y = x + dx, y + dy
+                
+                # Check bounds
+                if (0 <= new_x < self.env.map_size[0] and 
+                    0 <= new_y < self.env.map_size[1] and
+                    (new_x, new_y) not in visited):
+                    
+                    # Check if water blocks the path
+                    if self.env.map["Water"][new_x, new_y] == 0:  # Not water
+                        visited.add((new_x, new_y))
+                        queue.append(((new_x, new_y), path + [direction]))
+        
+        return f"No accessible {resource_type} found"
+
+    def get_navigation_hints(self):
+        """Get navigation hints for all important resources."""
+        hints = []
+        
+        # Only show hints for resources we need
+        if self.inventory['wood'] == 0:
+            wood_hint = self.find_path_to_nearest('wood')
+            if wood_hint:
+                hints.append(wood_hint)
+        
+        if self.inventory['stone'] == 0:
+            stone_hint = self.find_path_to_nearest('stone')
+            if stone_hint:
+                hints.append(stone_hint)
+        
+        # Show buildable hint if we have both resources
+        if self.inventory['wood'] > 0 and self.inventory['stone'] > 0:
+            buildable_hint = self.find_path_to_nearest('buildable')
+            if buildable_hint:
+                hints.append(buildable_hint)
+        
+        return hints
+
     def _get_action_descriptions(self):
         """Generate dynamic descriptions of valid actions."""
         valid_actions = self._get_valid_actions()
@@ -299,7 +400,11 @@ class MobileAgent(BaseAgent):
             descriptions.append(f"- Costs {self.env.build_labour} labour")
         
         # Always show nothing option
-        descriptions.append("\nYou can always choose to do nothing (costs no labour).")
+        nothing_labour = self.env.config.get('nothing_labour', 0.0)
+        if nothing_labour > 0:
+            descriptions.append(f"\nYou can always choose to do nothing (costs {nothing_labour} labour).")
+        else:
+            descriptions.append("\nYou can always choose to do nothing (costs no labour).")
         
         return "\n".join(descriptions)
 

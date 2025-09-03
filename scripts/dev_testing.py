@@ -6,6 +6,7 @@ import os
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 config = {
+    'experiment_name': 'dev_testing',
     'map_path': 'maps/env-pure_and_mixed-15x15.txt',
     'map_size': (15, 15),
     'wood_regen_prob': 1.0,
@@ -25,17 +26,15 @@ config = {
     'build_labour': 2.1,
     'trade_labour': 0.05,
     'gather_labour': 0.21,
+    'nothing_labour': 10,
     'max_order_lifetime': 50,
     'max_order_price': 1000,
     'llm': {
         'type': 'ollama',
         'model': 'qwen2.5:1.5b',
-        'temperature': 0.7,
+        'temperature': 1.0,
         'base_url': 'http://localhost:11434',
-        'memory_turns': 100,
-        'log_dir': 'logs',
-        'log_file': 'mobile_agent_conversation.txt',
-        'planner_log_file': 'planner_conversation.txt'
+        'memory_turns': 100
     },
     'agent_view_size': 10,
 

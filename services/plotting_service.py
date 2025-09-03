@@ -57,11 +57,14 @@ class PlottingService:
         print(f"All agent metrics plots saved successfully to {plot_path}!")
     
     def _get_plot_path(self, config):
-        """Determine the plot path from various sources."""
+        """Determine the plot path from various sources, including experiment name."""
         if self.plot_path:
+            # If plot_path was set directly, use it as-is
             return self.plot_path
         elif config and 'plot_path' in config:
-            return config['plot_path']
+            base_plot_path = config['plot_path']
+            experiment_name = config.get('experiment_name', 'default_experiment')
+            return os.path.join(base_plot_path, experiment_name)
         else:
             return None
     

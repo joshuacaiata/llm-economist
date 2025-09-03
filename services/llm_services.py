@@ -140,18 +140,21 @@ class AnthropicLLM(BaseLLM):
             print(f"Error generating response from Anthropic: {e}")
             return "Nothing, Nothing"  # Safe fallback
 
-def create_llm(config: dict) -> BaseLLM:
+def create_llm(config: dict, agent_type: str = "agent", agent_id: int = 0, experiment_name: str = None) -> BaseLLM:
     """
     Factory function to create LLM instance based on config.
     
     Args:
         config (dict): Configuration containing LLM settings
             Required keys:
-            - type: str, The type of LLM ("openai", "anthropic")
+            - type: str, The type of LLM ("openai", "ollama", "anthropic")
             Optional keys:
             - model: str, Model name
             - temperature: float, Temperature for sampling
             - api_key: str, API key if needed
+            - experiment_name: str, Name of experiment for logging
+        agent_type (str): Type of agent ("mobile", "planner", "central_bank")
+        agent_id (int): ID of the agent (for mobile agents)
             
     Returns:
         BaseLLM: An instance of the specified LLM class
@@ -159,12 +162,22 @@ def create_llm(config: dict) -> BaseLLM:
     llm_type = config.get("type", "openai").lower()
     api_key = config.get("api_key")
     
+    log_dir = f"logs/{experiment_name}"
+    
+    # Generate agent-specific log file name
+    if agent_type == "mobile":
+        log_file = f"mobile_agent_{agent_id}.txt"
+    elif agent_type == "planner":
+        log_file = "planner_agent.txt"
+    elif agent_type == "central_bank":
+        log_file = "central_bank_agent.txt"
+    else:
+        log_file = f"{agent_type}_agent.txt"
+    
     if llm_type == "ollama":
         model = config.get("model", "llama3.2:1b")
         temperature = config.get("temperature", 0.7)
         base_url = config.get("base_url", "http://localhost:11434")
-        log_dir = config.get("log_dir", "logs")
-        log_file = config.get("log_file", "llm_conversation.txt")
         return OllamaLLM(
             model=model,
             temperature=temperature,
@@ -175,8 +188,6 @@ def create_llm(config: dict) -> BaseLLM:
     elif llm_type == "openai":
         model = config.get("model", "gpt-4")
         temperature = config.get("temperature", 0.7)
-        log_dir = config.get("log_dir", "logs")
-        log_file = config.get("log_file", "llm_conversation.txt")
         return OpenAILLM(
             model=model,
             temperature=temperature,

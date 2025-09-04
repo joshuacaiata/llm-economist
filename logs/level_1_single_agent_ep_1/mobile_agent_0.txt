@@ -1,0 +1,3631 @@
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (3, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBXBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+WBBBB@BBBBBBB
+BBBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: 0
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 12 steps away
+        - Nearest stone: Down → Down → Down → Left → Down → Down → Down → Right (8 steps)
+
+
+        No previous decisions.
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (2, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBBBB
+WBBBB@BBBBXBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+WBBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -2.21
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Down → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -4.414524999999999
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -6.6993725
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -9.051523937499999
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Nothing, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -21.2490618
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (2, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBBBB
+WBBBB@BBBBXBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+WBBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -30.897641675624996
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Down → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -40.22094338964843
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -49.2278983085414
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -57.92735785753189
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -66.3280791863129
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -74.22871246803294
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -81.94431408566697
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (2, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBBBB
+WBBBB@BBBBXBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+WBBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -89.392437459908
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Down → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -96.58106641105124
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -103.51805507297084
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -110.21112090221135
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Nothing, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -126.45783871038586
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -136.57436381273382
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -146.0648069164968
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -155.29072786507163
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (0, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBXBB
+SBBBB@BBBBBBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+        - Build payout: 139.5
+        - Current utility: -164.1373707077382
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 15 steps away
+        - Nearest stone: 11 steps away
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (1, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBXBB
+WBBBB@BBBBBBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+        - Build payout: 139.5
+        - Current utility: -172.62012345271594
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Down → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (2, 12)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+WBBBB@BBBBBBB
+SBBBB@BBBBBBB
+WBBBB@BBBBXBB
+WBBBB@BBBBBBB
+SBBBBBBBBBBBB
+SBBBBBBBBBBBB
+BBBBB@BBBBBBB
+@@BB@@@@BB@@@
+BBBBB@BBBBBBB
+WBBBB@BBBBSBB
+WBBBBBBBBBSSB
+WBBBBBBBBBBSS
+WBBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -180.75378350266706
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Down → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Right
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (2, 13)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBXB
+BBBB@BBBBBBB
+BBBBBBBBBBBB
+BBBBBBBBBBBB
+BBBB@BBBBBBB
+@BB@@@@BB@@@
+BBBB@BBBBBBB
+BBBB@BBBBSBB
+BBBBBBBBBSSB
+BBBBBBBBBBSS
+BBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -188.55257824523176
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Left → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 24: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Right -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (3, 13)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBXB
+BBBBBBBBBBBB
+BBBBBBBBBBBB
+BBBB@BBBBBBB
+@BB@@@@BB@@@
+BBBB@BBBBBBB
+BBBB@BBBBSBB
+BBBBBBBBBSSB
+BBBBBBBBBBSS
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -196.0301850610238
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Left → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 24: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Right -> utility -0.21
+Turn 25: At (2, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (4, 13)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBBBBBBBBXB
+BBBBBBBBBBBB
+BBBB@BBBBBBB
+@BB@@@@BB@@@
+BBBB@BBBBBBB
+BBBB@BBBBSBB
+BBBBBBBBBSSB
+BBBBBBBBBBSS
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBSB
+        - Build payout: 139.5
+        - Current utility: -203.19975075586405
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 12 steps away
+        - Nearest stone: Down → Down → Left → Left → Down → Down → Down → Right (8 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 24: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Right -> utility -0.21
+Turn 25: At (2, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 26: At (3, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (3, 13)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBXB
+BBBBBBBBBBBB
+BBBBBBBBBBBB
+BBBB@BBBBBBB
+@BB@@@@BB@@@
+BBBB@BBBBBBB
+BBBB@BBBBSBB
+BBBBBBBBBSSB
+BBBBBBBBBBSS
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -210.07391042480822
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Left → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 24: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Right -> utility -0.21
+Turn 25: At (2, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 26: At (3, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 27: At (4, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Up
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (2, 13)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBXB
+BBBB@BBBBBBB
+BBBBBBBBBBBB
+BBBBBBBBBBBB
+BBBB@BBBBBBB
+@BB@@@@BB@@@
+BBBB@BBBBBBB
+BBBB@BBBBSBB
+BBBBBBBBBSSB
+BBBBBBBBBBSS
+BBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -216.66480575620878
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 14 steps away
+        - Nearest stone: Down → Down → Down → Down → Left → Left → Down → Down → Down → Right (10 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 24: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Right -> utility -0.21
+Turn 25: At (2, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 26: At (3, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 27: At (4, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 28: At (3, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================
+
+==================================================
+MODEL: qwen2.5:1.5b
+PROMPT:
+
+        You are a mobile agent in a 2D grid world.
+        Your goal is to maximize your utility function.
+        The utility function is the sum of the discounted utility of each turn.
+
+        MAP LEGEND:
+        W = Wood resource (can gather wood here)
+        S = Stone resource (can gather stone here)
+        @ = Water (cannot move here)
+        H = House (built by someone)
+        B = Buildable land (can build house here if you have wood+stone)
+        E = Empty land (can move here but nothing special)
+        X = Your current position
+
+        CURRENT STATE:
+        - Location: (3, 13)
+        - Inventory: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Neighbourhood:
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+BBBB@BBBBBXB
+BBBBBBBBBBBB
+BBBBBBBBBBBB
+BBBB@BBBBBBB
+@BB@@@@BB@@@
+BBBB@BBBBBBB
+BBBB@BBBBSBB
+BBBBBBBBBSSB
+BBBBBBBBBBSS
+BBBB@BBBBBBB
+BBBB@BBBBBBB
+        - Build payout: 139.5
+        - Current utility: -222.98410278464775
+        - Total houses built: 0
+        - Active market orders: 0
+        - Resources in escrow: {'wood': 0, 'stone': 0, 'coins': 0}
+        - Income: 0
+        
+        NAVIGATION HINTS:
+        - Nearest wood: 13 steps away
+        - Nearest stone: Down → Down → Down → Left → Left → Down → Down → Down → Right (9 steps)
+
+
+        RECENT DECISIONS:
+Turn 1: At (3, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -2.21
+Turn 2: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 3: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 4: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 5: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 6: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 7: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 8: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 9: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 10: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 11: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 12: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 13: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 14: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 15: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 16: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 17: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Nothing,  Up -> utility -10.00
+Turn 18: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 19: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility +0.00
+Turn 20: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 21: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 22: At (0, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 23: At (1, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 24: At (2, 12) with 0 wood, 0 stone, 0 coins
+Action: Move,  Right -> utility -0.21
+Turn 25: At (2, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 26: At (3, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+Turn 27: At (4, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 28: At (3, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Up -> utility -0.21
+Turn 29: At (2, 13) with 0 wood, 0 stone, 0 coins
+Action: Move,  Down -> utility -0.21
+
+
+        Based on your history:
+        1. Look for patterns in which actions led to the highest utility gains
+        2. Consider your current needs (wood/stone for building, coins for trading)
+        3. Think about market timing - when to buy/sell resources
+        4. Plan moves to reach valuable resources in your neighborhood
+        5. AVOID repeating the same action over and over - this wastes time
+        6. If you keep moving between the same positions, try a different direction
+        IMPORTANT STRATEGIES FOR SUCCESS:
+        1. COLLECT RESOURCES: Move to 'W' tiles to get wood, 'S' tiles to get stone
+        2. BUILD HOUSES: When you have wood+stone, move to 'B' tiles and build (gives {self.build_payout} coins!)
+        3. AVOID WASTING MOVES: Don't move back and forth between same positions
+        4. PRIORITIZE: Wood+Stone → Build House → Repeat (this is the main way to gain utility). You might also consider specializing (collect wood and stone and sell them, or buy them on the market and build houses).
+        
+        Your goal is to maximize utility. Building houses gives the biggest utility boost!
+        
+
+Here are the actions available to you this turn:
+You can move in the following directions:
+- Up
+- Down
+- Left
+- Right
+Moving costs 0.21 labour. If you move to a tile with wood or stone, you will collect it (costs 0.21 additional labour). With probability 0.10408990157261566, you will collect a second unit.
+
+You can always choose to do nothing (costs 10 labour).
+
+Please respond with your chosen action in the following format:
+Action, Arguments
+
+Examples:
+- To move: "Move, Up"
+- To trade: "Buy, Wood 10" or "Sell, Stone 5" (where the number is your price in coins)
+- To build: "Build, "
+- To do nothing: "Nothing, Nothing"
+
+Your response must match one of the available actions exactly.
+Return nothing else in your response except the action and correct arguments.
+If your response is invalid, you will do nothing, or conduct undefined behaviour.
+        
+
+RESPONSE:
+Move, Down
+==================================================

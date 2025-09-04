@@ -86,16 +86,6 @@ def get_level_1_training_config():
         # LLM settings - change get_llm_config() to switch types
         'llm': get_llm_config('ollama'),
         
-        # Reward shaping parameters
-        'reward_shaping': {
-            'utility_weight': 1.0,           # Weight for raw utility change
-            'build_bonus': 50.0,             # Bonus for building houses
-            'resource_collection_bonus': 10.0, # Bonus for collecting needed resources
-            'nothing_penalty': 15.0,         # Extra penalty for doing nothing
-            'repetition_penalty': 5.0,       # Penalty for repetitive actions
-            'min_return_threshold': -100.0   # Filter out very bad examples
-        },
-        
         # RL training parameters
         'rl_training': {
             'discount_factor': 0.95,

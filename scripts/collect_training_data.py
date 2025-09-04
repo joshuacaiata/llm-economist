@@ -4,7 +4,6 @@ import argparse
 import sys
 import os
 import json
-import time
 import traceback
 from datetime import datetime
 from typing import Dict, Any, List
@@ -19,6 +18,47 @@ from scripts.rl_training_config import (
     get_level_3_training_config,
     create_episode_config
 )
+
+
+def calculate_discounted_returns(training_examples: List[Dict[str, Any]], gamma: float = 0.95) -> List[Dict[str, Any]]:
+    """
+    Calculate discounted future returns for training examples.
+    Works backwards from the end of the episode.
+    
+    Args:
+        training_examples: List of training examples in chronological order
+        gamma: Discount factor (0 < gamma <= 1)
+        
+    Returns:
+        List of training examples with added 'discounted_return' field
+    """
+    if not training_examples:
+        return training_examples
+    
+    # Sort by step to ensure chronological order
+    sorted_examples = sorted(training_examples, key=lambda x: x.get('step', 0))
+    
+    # Calculate discounted returns working backwards
+    returns = []
+    running_return = 0.0
+    
+    # Work backwards through the episode
+    for example in reversed(sorted_examples):
+        immediate_reward = example.get('reward', 0.0)
+        running_return = immediate_reward + gamma * running_return
+        returns.append(running_return)
+    
+    # Reverse to get chronological order
+    returns = list(reversed(returns))
+    
+    # Add discounted returns to examples
+    enhanced_examples = []
+    for i, example in enumerate(sorted_examples):
+        enhanced_example = example.copy()
+        enhanced_example['discounted_return'] = returns[i]
+        enhanced_examples.append(enhanced_example)
+    
+    return enhanced_examples
 
 class TrainingDataCollector:
     """Manages collection of training data for any level"""
@@ -147,7 +187,8 @@ class TrainingDataCollector:
                     'final_utility': agent.utility[-1] if hasattr(agent, 'utility') and agent.utility else 0,
                     'final_inventory': getattr(agent, 'inventory', {}),
                     'final_coins': getattr(agent, 'inventory', {}).get('coins', 0),
-                    'episode_length': len(agent.utility) if hasattr(agent, 'utility') and agent.utility else 0
+                    'episode_length': len(agent.utility) if hasattr(agent, 'utility') and agent.utility else 0,
+                    'training_examples': getattr(agent, 'training_examples', [])
                 }
                 
                 episode_info['agent_metrics'][f'agent_{i}'] = agent_metrics
@@ -155,6 +196,13 @@ class TrainingDataCollector:
                 total_houses += agent_metrics['total_houses_built']
                 total_utility += agent_metrics['final_utility']
                 total_coins += agent_metrics['final_coins']
+            
+            gamma = self.config.get('rl_training', {}).get('discount_factor', 0.95)
+            for agent_key, agent_data in episode_info['agent_metrics'].items():
+                training_examples = agent_data.get('training_examples', [])
+                if training_examples:
+                    enhanced_examples = calculate_discounted_returns(training_examples, gamma)
+                    agent_data['training_examples'] = enhanced_examples
             
             num_agents = len(agents)
             episode_info['summary_metrics'] = {
@@ -175,6 +223,27 @@ class TrainingDataCollector:
                 print(f"   Total houses: {summary['total_houses_all_agents']}")
                 print(f"   Avg houses/agent: {summary['avg_houses_per_agent']:.1f}")
                 print(f"   Avg utility/agent: {summary['avg_utility_per_agent']:.1f}")
+                
+                total_training_examples = sum(
+                    len(agent_data.get('training_examples', [])) 
+                    for agent_data in episode_info.get('agent_metrics', {}).values()
+                )
+                
+                if total_training_examples > 0:
+                    all_rewards = []
+                    all_returns = []
+                    for agent_data in episode_info.get('agent_metrics', {}).values():
+                        for example in agent_data.get('training_examples', []):
+                            all_rewards.append(example.get('reward', 0))
+                            all_returns.append(example.get('discounted_return', 0))
+                    
+                    if all_rewards:
+                        avg_reward = sum(all_rewards) / len(all_rewards)
+                        avg_return = sum(all_returns) / len(all_returns)
+                        print(f"   Training examples: {total_training_examples}")
+                        print(f"   Avg reward: {avg_reward:.3f}, Avg discounted return: {avg_return:.3f}")
+                else:
+                    print(f"   Training examples: {total_training_examples}")
     
     def collect_data(self, num_episodes: int, start_from: int = 0) -> Dict[str, Any]:
         """Collect training data by running multiple episodes"""
@@ -217,7 +286,6 @@ class TrainingDataCollector:
         
         print("\nData collection complete.")
         self._print_summary()
-        self._print_next_steps()
         
         return results
     
@@ -274,15 +342,6 @@ class TrainingDataCollector:
         print(f"Avg Houses/Episode: {avg_houses:.1f}")
         print(f"Avg Final Utility: {avg_utility:.1f}")
         print("="*50)
-    
-    def _print_next_steps(self):
-        """Print next steps for the user"""
-        completed_files = self.get_completed_episode_files()
-        print(f"\nCollected {len(completed_files)} episode log files")
-        print("Next steps:")
-        print(f"1. Parse logs: python -m scripts.parse_training_logs --level {self.config['level']}")
-        print(f"2. Create dataset: python -m scripts.create_training_dataset --level {self.config['level']}")
-        print(f"3. Train model: python -m scripts.train_rl_model --level {self.config['level']}")
 
 def get_training_config(level: int) -> Dict[str, Any]:
     """Get training configuration for specified level"""

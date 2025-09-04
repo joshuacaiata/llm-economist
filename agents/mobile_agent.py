@@ -47,6 +47,8 @@ class MobileAgent(BaseAgent):
         self.movement_history = []
         self.decision_history = []
         self.memory_turns = config['llm'].get('memory_turns', 10)
+        
+        self.training_examples = []
 
         self.view_size = config['agent_view_size']
 
@@ -174,13 +176,31 @@ class MobileAgent(BaseAgent):
         if self.action_mechanism not in ["llm", "random"]:
             raise ValueError(f"Invalid agent action mechanism: {self.action_mechanism}")
             
+        utility_before = self.utility[-1] if self.utility else 0
+        
         if self.action_mechanism == "llm":
             prompt = self.observe()
             action = self.get_action(prompt)
+            
+            self._store_training_example(prompt, action, utility_before)
         else:  # random
             action = self.get_action()
+            
         self.execute_action(action)
         self.record_metrics()
+
+    def _store_training_example(self, prompt, action, utility_before):
+        """Store a training example for later use in RL fine-tuning."""
+        training_example = {
+            'step': len(self.training_examples),
+            'agent_id': self.agent_id,
+            'prompt': prompt,
+            'action': f"{action['action_type']}, {action['action_args']}",
+            'utility_before': utility_before,
+            'utility_after': None,  # Will be updated after action execution
+            'reward': None  # Will be calculated as utility_after - utility_before
+        }
+        self.training_examples.append(training_example)
 
     def execute_action(self, action):
         action_type = action['action_type']
@@ -204,6 +224,7 @@ class MobileAgent(BaseAgent):
                 # Convert Buy/Sell to buy/sell for trading system
                 transaction_type = action_parts[0].lower()
                 self.env.trading_system.make_order(self.agent_id, action_parts[1].lower(), int(action_parts[2]), transaction_type)
+                self.labour.append(self.env.trade_labour)
         elif action_type == "Build":
             self.build()
         elif action_type == "Nothing":
@@ -614,6 +635,12 @@ If your response is invalid, you will do nothing, or conduct undefined behaviour
         self.get_utility()
         self.update_last_decision_outcome()  # Update the outcome of the last decision
         
+        if self.training_examples and self.training_examples[-1]['utility_after'] is None:
+            latest_example = self.training_examples[-1]
+            utility_after = self.utility[-1] if self.utility else 0
+            latest_example['utility_after'] = utility_after
+            latest_example['reward'] = utility_after - latest_example['utility_before']
+        
         self.metrics_history['coins'].append(self.inventory['coins'])
         self.metrics_history['wood'].append(self.inventory['wood'])
         self.metrics_history['stone'].append(self.inventory['stone'])
@@ -632,6 +659,7 @@ If your response is invalid, you will do nothing, or conduct undefined behaviour
         self.labour = [0]
         self.movement_history = []
         self.decision_history = []
+        self.training_examples = []
 
     def reset_year(self):
         self.last_year_coins = self.inventory['coins']

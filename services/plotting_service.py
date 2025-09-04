@@ -54,7 +54,7 @@ class PlottingService:
             self.plot_tax_collection(env.planner, plot_path) 
             self.plot_planner_utility(env.planner, plot_path)
         
-        print(f"All agent metrics plots saved successfully to {plot_path}!")
+        print(f"All agent metrics plots saved successfully to {plot_path}.")
     
     def _get_plot_path(self, config):
         """Determine the plot path from various sources, including experiment name."""
@@ -91,7 +91,6 @@ class PlottingService:
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
             plt.close()
             
-            print(f"Saved {filename}")
     
     def _create_summary_plot(self, agents, plot_path, trading_system=None):
         """Create a summary plot with all metrics including market data if available."""
@@ -166,7 +165,6 @@ class PlottingService:
         plt.savefig(summary_filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print("Saved agent_metrics_summary.png")
     
     def _format_metric_name(self, metric):
         """Format metric name for display."""
@@ -210,7 +208,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved {filename}")
     
     def set_plot_path(self, plot_path):
         """Set the plot path for this service."""
@@ -243,7 +240,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print("Saved map_state.png")
         
     def _plot_map_state(self, env, agents, ax):
         """Plot the map state with agent positions and paths."""
@@ -332,7 +328,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print("Saved market_orders.png")
         
     def _plot_price_history(self, trading_system, plot_path):
         """Plot the last trade price for each resource over time."""
@@ -358,7 +353,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print("Saved market_prices.png")
 
     def plot_yearly_income(self, agents, plot_path):
         """Plot yearly income for each agent."""
@@ -393,7 +387,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved {filename}")
 
     def plot_tax_rates(self, planner, plot_path):
         """Plot tax rates over time with dynamic bracket ranges."""
@@ -428,7 +421,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved {filename}")
 
     def plot_planner_utility(self, planner, plot_path):
         """Plot the planner's utility history."""
@@ -449,7 +441,6 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved {filename}")
 
     def plot_tax_collection(self, planner, plot_path):
         """Plot the history of collected taxes over time."""
@@ -470,4 +461,3 @@ class PlottingService:
         plt.savefig(filepath, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved {filename}")

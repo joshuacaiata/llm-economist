@@ -48,8 +48,6 @@ class EconomyEnv:
                     self.build_payout_max)
             )
 
-            print(f"Agent {i} build payout: {build_payout}")
-
             self.mobile_agents.append(
                 MobileAgent(
                     "MobileAgent",
